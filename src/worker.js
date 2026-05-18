@@ -87,7 +87,34 @@ async function initDB(env) {
         "INSERT INTO settings (key, value) VALUES (?, ?)"
       ).bind('site_description', '一个使用 Cloudflare 构建的博客').run();
 
-      console.log('数据库初始化完成');
+      // 插入示例文章
+      await env.DB.prepare(`
+        INSERT INTO posts (title, slug, content, excerpt, cover_image, category, tags, status, view_count)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `).bind(
+        '欢迎使用 cloudflare-light-blog',
+        'welcome',
+        '# 欢迎
+
+这是一个基于 Cloudflare Workers + D1 + R2 构建的轻量级博客系统。
+
+## 功能特点
+
+- ✅ 简洁的后台管理
+- ✅ 支持文章封面图
+- ✅ 高速部署
+- ✅ 免费额度充足
+
+开始你的博客之旅吧！',
+        '这是一个基于 Cloudflare Workers 构建的轻量级博客系统...',
+        '',
+        '技术教程',
+        'Cloudflare,博客',
+        'published',
+        0
+      ).run();
+
+      console.log('数据库初始化完成，已添加示例文章');
     }
   } catch (e) {
     console.error('数据库初始化错误:', e);
@@ -103,7 +130,19 @@ async function handleAPI(request, env, path) {
       headers: { 'Content-Type': 'application/json' }
     });
 
-  // 认证检查
+  // 登录接口不需要认证
+  if (path === '/api/login' && method === 'POST') {
+    const body = await request.json();
+    if (!env.ADMIN_PASSWORD) {
+      return json({ success: true, token: 'no-auth' });
+    }
+    if (body.password === env.ADMIN_PASSWORD) {
+      return json({ success: true, token: generateToken(env.ADMIN_PASSWORD) });
+    }
+    return json({ success: false, error: '密码错误' }, 401);
+  }
+
+  // 认证检查（其他 API 需要认证）
   if (env.ADMIN_PASSWORD) {
     const token = request.headers.get('Authorization')?.replace('Bearer ', '');
     if (token !== generateToken(env.ADMIN_PASSWORD)) {
@@ -251,28 +290,29 @@ async function handleAPI(request, env, path) {
     return json({ url: `data:${contentType};base64,${base64}` });
   }
 
-  // 登录
-  if (path === '/api/login' && method === 'POST') {
-    const body = await request.json();
-    if (!env.ADMIN_PASSWORD) {
-      return json({ success: true, token: 'no-auth' });
-    }
-    if (body.password === env.ADMIN_PASSWORD) {
-      return json({ success: true, token: generateToken(env.ADMIN_PASSWORD) });
-    }
-    return json({ success: false, error: '密码错误' }, 401);
-  }
-
   return json({ error: '未找到接口' }, 404);
 }
 
 // ==================== 后台处理 ====================
 async function handleAdmin(request, env, path) {
-  // 验证登录
+  // 检查是否是静态资源请求
+  const url = new URL(request.url);
+  
+  // 登录页面不需要认证
+  if (url.pathname === '/admin/' || url.pathname === '/admin') {
+    return new Response(getAdminHTML(), {
+      headers: { 'Content-Type': 'text/html;charset=utf-8' }
+    });
+  }
+
+  // API 请求需要认证
   if (env.ADMIN_PASSWORD) {
     const token = request.headers.get('Authorization')?.replace('Bearer ', '');
     if (token !== generateToken(env.ADMIN_PASSWORD)) {
-      return new Response('未授权', { status: 401 });
+      return new Response(JSON.stringify({ error: '未授权' }), { 
+        status: 401,
+        headers: { 'Content-Type': 'application/json' }
+      });
     }
   }
 
