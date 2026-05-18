@@ -32,7 +32,10 @@ export default {
 
 // ==================== 数据库初始化 ====================
 async function initDB(env) {
-  if (!env.DB) return;
+  if (!env.DB) {
+    console.error('D1 数据库未绑定');
+    return false;
+  }
 
   try {
     // 检查表是否存在
@@ -41,9 +44,11 @@ async function initDB(env) {
     ).all();
 
     if (results.length === 0) {
+      console.log('开始创建数据库表...');
+      
       // 创建文章表
       await env.DB.exec(`
-        CREATE TABLE posts (
+        CREATE TABLE IF NOT EXISTS posts (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           title TEXT NOT NULL,
           slug TEXT UNIQUE NOT NULL,
@@ -61,7 +66,7 @@ async function initDB(env) {
 
       // 创建分类表
       await env.DB.exec(`
-        CREATE TABLE categories (
+        CREATE TABLE IF NOT EXISTS categories (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           name TEXT UNIQUE NOT NULL,
           slug TEXT UNIQUE NOT NULL,
@@ -71,7 +76,7 @@ async function initDB(env) {
 
       // 创建设置表
       await env.DB.exec(`
-        CREATE TABLE settings (
+        CREATE TABLE IF NOT EXISTS settings (
           id INTEGER PRIMARY KEY,
           key TEXT UNIQUE NOT NULL,
           value TEXT
@@ -80,16 +85,16 @@ async function initDB(env) {
 
       // 插入默认设置
       await env.DB.prepare(
-        "INSERT INTO settings (key, value) VALUES (?, ?)"
+        "INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)"
       ).bind('site_name', '我的博客').run();
 
       await env.DB.prepare(
-        "INSERT INTO settings (key, value) VALUES (?, ?)"
+        "INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)"
       ).bind('site_description', '一个使用 Cloudflare 构建的博客').run();
 
       // 插入示例文章
       await env.DB.prepare(`
-        INSERT INTO posts (title, slug, content, excerpt, cover_image, category, tags, status, view_count)
+        INSERT OR IGNORE INTO posts (title, slug, content, excerpt, cover_image, category, tags, status, view_count)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
       `).bind(
         '欢迎使用 cloudflare-light-blog',
@@ -116,13 +121,18 @@ async function initDB(env) {
 
       console.log('数据库初始化完成，已添加示例文章');
     }
+    return true;
   } catch (e) {
     console.error('数据库初始化错误:', e);
+    return false;
   }
 }
 
 // ==================== API 处理 ====================
 async function handleAPI(request, env, path) {
+  // 确保数据库已初始化
+  await initDB(env);
+  
   const method = request.method;
   const json = (data, status = 200) =>
     new Response(JSON.stringify(data), {
@@ -142,8 +152,12 @@ async function handleAPI(request, env, path) {
     return json({ success: false, error: '密码错误' }, 401);
   }
 
-  // 认证检查（其他 API 需要认证）
-  if (env.ADMIN_PASSWORD) {
+  // 公开 API（不需要认证）
+  const publicAPIs = ['/api/posts', '/api/post/', '/api/categories', '/api/settings'];
+  const isPublicAPI = publicAPIs.some(api => path.startsWith(api));
+
+  // 认证检查（非公开 API 需要认证）
+  if (!isPublicAPI && env.ADMIN_PASSWORD) {
     const token = request.headers.get('Authorization')?.replace('Bearer ', '');
     if (token !== generateToken(env.ADMIN_PASSWORD)) {
       return json({ error: '未授权' }, 401);
