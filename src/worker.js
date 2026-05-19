@@ -577,9 +577,21 @@ function getFrontendHTML() {
   <header>
     <h1>我的博客</h1>
     <p>分享技术，记录生活</p>
-    <div style="margin-top:20px">
+    <div id="nav-categories" style="margin-top:20px">
       <a href="/" style="color:white;margin:0 10px">全部</a>
     </div>
+    <script>
+      // 加载分类导航
+      fetch('/api/categories')
+        .then(r=>r.json())
+        .then(cats=>{
+          const nav = document.getElementById('nav-categories');
+          if(cats && cats.length > 0) {
+            nav.innerHTML = '<a href="/" style="color:white;margin:0 10px">全部</a>' + 
+              cats.map(c=>'<a href="/?category='+c.name+'" style="color:white;margin:0 10px">'+c.name+'</a>').join('');
+          }
+        });
+    </script>
   </header>
   <main>
     <div class="post-list" id="app">
@@ -764,7 +776,10 @@ function getAdminHTML() {
           </div>
           <div class="form-group">
             <label>分类</label>
-            <input v-model="form.category" placeholder="分类">
+            <select v-model="form.category" required>
+              <option value="">请选择分类</option>
+              <option v-for="cat in categories" :key="cat.id" :value="cat.name">{{ cat.name }}</option>
+            </select>
           </div>
           <div class="form-row">
             <div class="form-group">
@@ -1042,9 +1057,8 @@ function getAdminHTML() {
         const saveCategory = async () => {
           try {
             await api('/api/category', { method: 'POST', data: categoryForm.value });
-            categoryModal.value = false;
-            loadCategories();
-            alert('保存成功');
+            await loadCategories();
+            categoryForm.value = { name: '', description: '' };
           } catch(e) { alert('保存失败'); }
         };
         
