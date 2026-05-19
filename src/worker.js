@@ -424,15 +424,19 @@ async function handleFrontend(request, env) {
   const url = new URL(request.url);
   const path = url.pathname;
   
-  // 文章详情页
+  // 文章详情页 - /post/YYYYMM/ID 格式
   if (path.startsWith('/post/')) {
-    const slug = path.replace('/post/', '');
+    const match = path.match(/^\/post\/(\d{6})\/(\d+)$/);
+    if (!match) {
+      return new Response('无效的文章链接', { status: 404 });
+    }
+    const id = parseInt(match[2]);
     await initDB(env);
     
     try {
       const { results } = await env.DB.prepare(
-        "SELECT * FROM posts WHERE slug=? AND status='published'"
-      ).bind(slug).all();
+        "SELECT * FROM posts WHERE id=? AND status='published'"
+      ).bind(id).all();
       
       if (results.length === 0) {
         return new Response('文章不存在', { status: 404 });
@@ -579,7 +583,7 @@ function getFrontendHTML() {
           <article class="post-card">
             \${post.cover_image ? \`<img src="\${post.cover_image}" alt="\${post.title}">\` : ''}
             <div class="content">
-              <h2><a href="/post/\${post.slug}">\${post.title}</a></h2>
+              <h2><a href="/post/\${new Date(post.created_at).getFullYear()}\${String(post.created_at.getMonth()+1).padStart(2,'0')}/\${post.id}">\${post.title}</a></h2>
               <p class="excerpt">\${post.excerpt || ''}</p>
               <div class="meta">
                 <span>\${post.category}</span>
@@ -728,6 +732,12 @@ function getAdminHTML() {
           <div class="form-group">
             <label>封面图片</label>
             <input type="file" @change="handleCoverChange" accept="image/*">
+            <div v-if="uploading" style="margin-top:10px">
+              <div style="background:#e2e8f0;border-radius:4px;height:8px;overflow:hidden">
+                <div :style="{width:uploadProgress+'%',background:'#667eea',height:'100%',transition:'width 0.1s'}"></div>
+              </div>
+              <p style="font-size:12px;color:#666;margin-top:5px">上传中... {{ uploadProgress }}%</p>
+            </div>
             <img v-if="coverPreview" :src="coverPreview" class="cover-preview">
           </div>
           <div class="form-group">
@@ -801,20 +811,78 @@ function getAdminHTML() {
 
         const openEdit = (post) => {
           editingId.value = post.id;
-          form.value = { ...post };
+          form.value = { 
+            title: post.title || '',
+            content: post.content || '',
+            excerpt: post.excerpt || '',
+            category: post.category || '',
+            tags: post.tags || '',
+            status: post.status || 'draft',
+            cover_image: post.cover_image || ''
+          };
           coverPreview.value = post.cover_image || '';
           showModal.value = true;
         };
 
-        const handleCoverChange = (e) => {
+        const uploading = ref(false);
+        const uploadProgress = ref(0);
+        
+        const handleCoverChange = async (e) => {
           const file = e.target.files[0];
           if (!file) return;
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            form.value.cover_image = e.target.result;
-            coverPreview.value = e.target.result;
-          };
-          reader.readAsDataURL(file);
+          
+          uploading.value = true;
+          uploadProgress.value = 0;
+          
+          // 模拟进度条
+          const progressInterval = setInterval(() => {
+            if (uploadProgress.value < 90) {
+              uploadProgress.value += 10;
+            }
+          }, 100);
+          
+          try {
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            const token = localStorage.getItem('token');
+            const res = await fetch('/api/upload', {
+              method: 'POST',
+              headers: token ? { 'Authorization': 'Bearer ' + token } : {},
+              body: formData
+            });
+            
+            const data = await res.json();
+            clearInterval(progressInterval);
+            uploadProgress.value = 100;
+            
+            if (data.url) {
+              form.value.cover_image = data.url;
+              coverPreview.value = data.url;
+            } else {
+              // 如果上传失败，使用 base64
+              const reader = new FileReader();
+              reader.onload = (e) => {
+                form.value.cover_image = e.target.result;
+                coverPreview.value = e.target.result;
+              };
+              reader.readAsDataURL(file);
+            }
+          } catch (err) {
+            clearInterval(progressInterval);
+            // 降级为 base64
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              form.value.cover_image = e.target.result;
+              coverPreview.value = e.target.result;
+            };
+            reader.readAsDataURL(file);
+          } finally {
+            setTimeout(() => {
+              uploading.value = false;
+              uploadProgress.value = 0;
+            }, 500);
+          }
         };
 
         const savePost = async () => {
@@ -867,7 +935,7 @@ function getAdminHTML() {
           }
         });
 
-        return { logged, password, login, logout, posts, showModal, editingId, form, coverPreview, toast, openAdd, openEdit, handleCoverChange, savePost, deletePost };
+        return { logged, password, login, logout, posts, showModal, editingId, form, coverPreview, toast, uploading, uploadProgress, openAdd, openEdit, handleCoverChange, savePost, deletePost };
       }
     }).mount('#app');
   </script>
