@@ -1137,23 +1137,31 @@ function getAdminHTML() {
         const loadCategories = async () => {
           try {
             const res = await api('/api/categories');
+            console.log('分类数据:', res.data);
             categories.value = res.data;
-          } catch(e) {}
+          } catch(e) {
+            console.error('加载分类失败:', e);
+          }
         };
         
         const loadSettings = async () => {
           try {
             const res = await api('/api/settings');
+            console.log('设置数据:', res.data);
             settings.value = res.data;
-          } catch(e) {}
+          } catch(e) {
+            console.error('加载设置失败:', e);
+          }
         };
         
         const settingsModal = ref(false);
         const settingsForm = ref({ site_name: '', site_description: '', site_favicon: '' });
         
         const openSettingsModal = () => {
+          console.log('openSettingsModal clicked', settings.value);
           settingsForm.value = { ...settings.value };
           settingsModal.value = true;
+          console.log('settingsModal:', settingsModal.value);
         };
         
         const saveSettings = async () => {
