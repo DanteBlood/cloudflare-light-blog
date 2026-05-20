@@ -721,7 +721,7 @@ function getPostHTML(post, settings) {
     <h1><a href="/">${siteName}</a></h1>
   </header>
   <main>
-    <article class="post-content">
+    <article class="post-content" style="max-width:800px;margin:30px auto">
       <h1>${post.title}</h1>
       <div class="post-meta">
         <span>分类: ${post.category}</span> | 
@@ -790,9 +790,6 @@ function getFrontendHTML(settings) {
   <header>
     <h1>${siteName}</h1>
     ${siteDesc ? `<p>${siteDesc}</p>` : ''}
-    <div id="nav-categories" style="margin-top:20px">
-      <a href="/" style="color:white;margin:0 10px">全部</a>
-    </div>
   </header>
   <main>
     <aside class="sidebar">
@@ -1443,10 +1440,15 @@ function getAdminHTML() {
         
         const saveSettings = async () => {
           try {
-            await api('/api/settings', { method: 'POST', data: settingsForm.value });
+            // 确保 site_links 转换为正确格式
+            const data = { ...settingsForm.value };
+            await api('/api/settings', { method: 'POST', data: data });
             await loadSettings();
             settingsModal.value = false;
-          } catch(e) { alert('保存失败'); }
+          } catch(e) { 
+            console.error('保存设置失败:', e);
+            alert('保存失败: ' + e.message); 
+          }
         };
         
         const handleFavicon = async (e) => {
