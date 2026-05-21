@@ -1319,6 +1319,7 @@ function getAdminHTML() {
         const logged = ref(false);
         const password = ref('');
         const posts = ref([]);
+        const editingId = ref(null);
         const form = ref({ title: '', category: '', status: 'draft', tags: '', content: '', cover_image: '', password: '' });
         const coverPreview = ref('');
         const toast = ref('');
