@@ -628,6 +628,150 @@ async function handleFrontend(request, env) {
   });
 }
 
+// ==================== 前端 HTML ====================
+function getFrontendHTML(settings) {
+  settings = settings || {};
+  const siteName = settings.site_name || '我的博客';
+  const siteDesc = settings.site_description || '';
+  const siteAuthor = settings.site_author || siteName;
+  const siteAvatar = settings.site_avatar || '';
+  const siteBio = settings.site_bio || '';
+  const favicon = settings.site_favicon || '';
+  
+  return `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${siteName}</title>
+  ${favicon ? `<link rel="icon" href="${favicon}">` : ''}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: Nunito, 'Noto Sans SC', sans-serif; background: #f8f8f0; color: #725d42; }
+    header { background: linear-gradient(135deg, #7DC395 0%, #5BAF7A 100%); color: #fff; padding: 40px 20px; text-align: center; position: relative; overflow: hidden; }
+    header::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 40px; background: linear-gradient(transparent, rgba(0,0,0,0.05)); }
+    header h1 { font-size: 2.5em; font-weight: 800; margin-bottom: 8px; letter-spacing: 0.02em; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    header a { color: #fff; text-decoration: none; }
+    header p { opacity: 0.9; font-size: 1.1em; font-weight: 500; }
+    main { max-width: 1100px; margin: 30px auto; padding: 0 20px; display: flex; gap: 24px; align-items: flex-start; }
+    .sidebar { width: 280px; flex-shrink: 0; }
+    .post-list { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+    .post-card { background: #f7f3df; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 10px rgba(107, 92, 67, 0.42); display: flex; flex-direction: row; transition: all 0.3s ease; border: 2px solid #e8e0cc; }
+    .post-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(114, 93, 66, 0.15); }
+    .post-card .post-cover { width: 220px; flex-shrink: 0; background: #e8e0cc; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .post-card .post-cover img { width: 100%; height: 100%; object-fit: cover; }
+    .post-card .post-content { flex: 1; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; min-width: 0; }
+    .post-card h2 { font-size: 1.2em; margin-bottom: 8px; color: #794f27; font-weight: 700; }
+    .post-card h2 a { color: #794f27; text-decoration: none; }
+    .post-card .excerpt { color: #725d42; line-height: 1.5; font-size: 0.9em; font-weight: 500; }
+    .post-card .meta { display: flex; gap: 12px; color: #9f927d; font-size: 0.8em; margin-top: 12px; font-weight: 600; }
+    .post-card a.read-more { display: inline-block; padding: 8px 20px; background: #19c8b9; color: #fff; text-decoration: none; border-radius: 50px; font-size: 0.85em; font-weight: 600; align-self: flex-start; margin-top: 12px; box-shadow: 0 4px 0 0 #11a89b; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
+    .post-card a.read-more:hover { transform: translateY(-1px); box-shadow: 0 5px 0 0 #11a89b; }
+    .post-card a.read-more:active { transform: translateY(2px); box-shadow: 0 1px 0 0 #11a89b; }
+    .profile-card { background: #f7f3df; border-radius: 20px; padding: 24px; box-shadow: 0 4px 10px rgba(107, 92, 67, 0.42); border: 2px solid #e8e0cc; }
+    .profile-card .avatar { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; margin: 0 auto 14px; display: block; border: 3px solid #c4b89e; background: #e8e0cc; }
+    .profile-card .name { font-size: 1.1em; font-weight: 700; text-align: center; margin-bottom: 4px; color: #794f27; }
+    .profile-card .bio { color: #725d42; font-size: 0.85em; text-align: center; margin-bottom: 14px; font-weight: 500; }
+    .profile-card .stats { display: flex; justify-content: center; gap: 16px; padding-bottom: 14px; border-bottom: 2px solid #e8e0cc; margin-bottom: 14px; }
+    .profile-card .stat-item { text-align: center; }
+    .profile-card .stat-num { font-size: 1.1em; font-weight: 800; color: #19c8b9; }
+    .profile-card .stat-label { font-size: 0.75em; color: #9f927d; font-weight: 600; }
+    .profile-card h4 { font-size: 0.85em; color: #9f927d; margin: 14px 0 8px; font-weight: 700; letter-spacing: 0.5px; }
+    .profile-card .category-list a, .profile-card .link-list a { display: block; padding: 8px 12px; margin: 0 0 6px 0; color: #725d42; text-decoration: none; background: #f0e8d8; border-radius: 12px; font-size: 0.85em; font-weight: 600; transition: all 0.2s; border: 2px solid transparent; }
+    .profile-card .category-list a:hover, .profile-card .link-list a:hover { background: #e6f9f6; border-color: #19c8b9; color: #11a89b; }
+    footer { text-align: center; padding: 30px 20px; color: #9f927d; font-size: 0.85em; font-weight: 500; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1><a href="/">${siteName}</a></h1>
+    ${siteDesc ? `<p>${siteDesc}</p>` : ''}
+  </header>
+  <main>
+    <aside class="sidebar">
+      <div class="profile-card">
+        ${siteAvatar ? `<img class="avatar" src="${siteAvatar}" alt="头像">` : `<img class="avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Crect fill='%23e8e0cc' width='80' height='80'/%3E%3Ctext x='40' y='45' text-anchor='middle' fill='%239f927d' font-size='32'%3E?%3C/text%3E%3C/svg%3E" alt="头像">`}
+        <div class="name">${siteAuthor}</div>
+        ${siteBio ? `<div class="bio">${siteBio}</div>` : ''}
+        <div class="stats">
+          <div class="stat-item">
+            <div id="stat-posts" class="stat-num">-</div>
+            <div class="stat-label">文章</div>
+          </div>
+          <div class="stat-item">
+            <div id="stat-cats" class="stat-num">-</div>
+            <div class="stat-label">分类</div>
+          </div>
+        </div>
+        <h4>分类</h4>
+        <div id="category-list" class="category-list"></div>
+        <h4>友链</h4>
+        <div id="link-list" class="link-list"></div>
+      </div>
+    </aside>
+    <div class="post-list" id="app">
+      <p style="text-align:center;color:#9f927d;">加载中...</p>
+    </div>
+  </main>
+  <footer>&copy; 2026 ${siteName}</footer>
+  <script>
+    fetch('/api/stats').then(r=>r.json()).then(s=>{
+      document.getElementById('stat-posts').textContent = s.postCount;
+      document.getElementById('stat-cats').textContent = s.catCount;
+    });
+    fetch('/api/categories').then(r=>r.json()).then(cats=>{
+      const list = document.getElementById('category-list');
+      if(cats && Array.isArray(cats) && cats.length > 0) {
+        list.innerHTML = cats.map(c=>'<a href="/?category='+encodeURIComponent(c.name)+'">'+c.name+'</a>').join('');
+      }
+    });
+    fetch('/api/links').then(r=>r.json()).then(links=>{
+      const list = document.getElementById('link-list');
+      if(links && Array.isArray(links) && links.length > 0) {
+        list.innerHTML = links.map(l=>'<a href="'+l.url+'" target="_blank">'+l.name+'</a>').join('');
+      }
+    });
+    async function loadPosts() {
+      try {
+        const res = await fetch('/api/posts');
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const posts = await res.json();
+        const app = document.getElementById('app');
+        if (!posts || posts.length === 0) {
+          app.innerHTML = '<p style="text-align:center;color:#9f927d;">暂无文章</p>';
+          return;
+        }
+        const formatDate = (d) => { const dt = new Date(d); return dt.getFullYear() + String(dt.getMonth()+1).padStart(2,'0'); };
+        const getExcerpt = (c) => { if(!c) return '...'; return c.substring(0,30) + (c.length > 30 ? '...' : ''); };
+        app.innerHTML = posts.map(post => `
+          <article class="post-card">
+            <div class="post-cover">${post.cover_image ? `<img src="${post.cover_image}" alt="${post.title}">` : `<span style="color:#9f927d">暂无封面</span>`}</div>
+            <div class="post-content">
+              <h2><a href="/post/${formatDate(post.created_at)}/${post.id}">${post.title}</a></h2>
+              <p class="excerpt">${getExcerpt(post.content)}</p>
+              <div class="meta">
+                <span>${post.category}</span>
+                <span>${post.view_count} 阅读</span>
+                <span>${new Date(post.created_at).toLocaleDateString('zh-CN')}</span>
+              </div>
+              <a class="read-more" href="/post/${formatDate(post.created_at)}/${post.id}" target="_blank">阅读更多</a>
+            </div>
+          </article>
+        `).join('');
+      } catch(e) {
+        console.error('加载文章失败:', e);
+        document.getElementById('app').innerHTML = '<p style="text-align:center;color:#e05a5a;">加载失败: ' + e.message + '</p>';
+      }
+    }
+    loadPosts();
+  </script>
+</body>
+</html>`;
+}
+
 // ==================== 工具函数 ====================
 function generateToken(password) {
   let hash = 0;
