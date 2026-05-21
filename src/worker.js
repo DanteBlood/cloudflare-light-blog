@@ -126,6 +126,10 @@ async function initDB(env) {
 
       await env.DB.prepare(
         "INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)"
+      ).bind('site_footer', '© 2026 我的博客').run();
+
+      await env.DB.prepare(
+        "INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)"
       ).bind('site_author', '').run();
 
       // 插入示例文章
@@ -716,7 +720,7 @@ function getFrontendHTML(settings) {
       <p style="text-align:center;color:#9f927d;">加载中...</p>
     </div>
   </main>
-  <footer>&copy; 2026 ${siteName}</footer>
+  <footer>${settings.site_footer || '© 2026 ' + siteName}</footer>
   <script>
     fetch('/api/stats').then(r=>r.json()).then(s=>{
       document.getElementById('stat-posts').textContent = s.postCount;
@@ -928,7 +932,7 @@ function getPostHTML(post, settings) {
       </article>
     </div>
   </main>
-  <footer>&copy; 2026 ${siteName}</footer>
+  <footer>${settings.site_footer || '© 2026 ' + siteName}</footer>
   <script>
     fetch('/api/stats').then(r=>r.json()).then(s=>{
       document.getElementById('stat-posts').textContent = s.postCount;
@@ -1065,6 +1069,9 @@ function getAdminHTML() {
           <a href="#" :class="{active: currentPage==='category'}" @click.prevent="currentPage='category'">
             <span class="icon">📂</span> 分类管理
           </a>
+          <a href="#" :class="{active: currentPage==='profile'}" @click.prevent="currentPage='profile'">
+            <span class="icon">👤</span> 个人设置
+          </a>
           <a href="#" :class="{active: currentPage==='settings'}" @click.prevent="currentPage='settings'">
             <span class="icon">⚙️</span> 网站设置
           </a>
@@ -1124,6 +1131,36 @@ function getAdminHTML() {
           </div>
         </div>
         
+        <!-- 个人设置 -->
+        <div v-if="currentPage==='profile'">
+          <div class="page-header">
+            <h2>个人设置</h2>
+          </div>
+          <div class="card">
+            <div class="form-group">
+              <label>个人名称</label>
+              <input v-model="settingsForm.site_author" placeholder="个人名称">
+            </div>
+            <div class="form-group">
+              <label>个人头像</label>
+              <input type="file" @change="handleAvatar" accept="image/*">
+              <div v-if="settingsForm.site_avatar" style="margin-top:10px;display:flex;align-items:center;gap:12px">
+                <img :src="settingsForm.site_avatar" style="width:64px;height:64px;border-radius:50%;border:3px solid #c4b89e">
+                <button @click="settingsForm.site_avatar=''" style="padding:6px 14px;background:#e05a5a;color:#fff;border:none;border-radius:50px;cursor:pointer;font-size:13px">删除</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>个人简介</label>
+              <textarea v-model="settingsForm.site_bio" placeholder="介绍一下自己" rows="3" style="border-radius:18px"></textarea>
+            </div>
+            <div class="form-group">
+              <label>友情链接（每行一个，格式：名称,地址）</label>
+              <textarea v-model="settingsForm.site_links" placeholder="Google,https://google.com" rows="4" style="border-radius:18px"></textarea>
+            </div>
+            <button class="btn" @click="saveSettings" style="width:100%;margin-top:20px">保存设置</button>
+          </div>
+        </div>
+        
         <!-- 网站设置 -->
         <div v-if="currentPage==='settings'">
           <div class="page-header">
@@ -1139,14 +1176,6 @@ function getAdminHTML() {
               <input v-model="settingsForm.site_description" placeholder="网站副标题">
             </div>
             <div class="form-group">
-              <label>个人名称</label>
-              <input v-model="settingsForm.site_author" placeholder="个人名称">
-            </div>
-            <div class="form-group">
-              <label>个人简介</label>
-              <textarea v-model="settingsForm.site_bio" placeholder="个人简介" rows="3" style="border-radius:18px"></textarea>
-            </div>
-            <div class="form-group">
               <label>网站图标</label>
               <input type="file" @change="handleFavicon" accept=".ico,image/*">
               <div v-if="settingsForm.site_favicon" style="margin-top:10px;display:flex;align-items:center;gap:12px">
@@ -1155,16 +1184,8 @@ function getAdminHTML() {
               </div>
             </div>
             <div class="form-group">
-              <label>博客头像</label>
-              <input type="file" @change="handleAvatar" accept="image/*">
-              <div v-if="settingsForm.site_avatar" style="margin-top:10px;display:flex;align-items:center;gap:12px">
-                <img :src="settingsForm.site_avatar" style="width:48px;height:48px;border-radius:50%">
-                <button @click="settingsForm.site_avatar=''" style="padding:6px 12px;background:#e05a5a;color:#fff;border:none;border-radius:50px;cursor:pointer;font-size:12px">删除</button>
-              </div>
-            </div>
-            <div class="form-group">
-              <label>友链（每行一个，格式：名称,地址）</label>
-              <textarea v-model="settingsForm.site_links" placeholder="Google,https://google.com" rows="4" style="border-radius:18px"></textarea>
+              <label>网站页脚</label>
+              <input v-model="settingsForm.site_footer" placeholder="© 2026 我的博客">
             </div>
             <button class="btn" @click="saveSettings" style="width:100%;margin-top:20px">保存设置</button>
           </div>
@@ -1254,7 +1275,7 @@ function getAdminHTML() {
         const uploadProgress = ref(0);
         const categories = ref([]);
         const currentPage = ref('posts');
-        const settingsForm = ref({ site_name: '', site_description: '', site_favicon: '', site_avatar: '', site_bio: '', site_links: '', site_author: '' });
+        const settingsForm = ref({ site_name: '', site_description: '', site_favicon: '', site_avatar: '', site_bio: '', site_links: '', site_author: '', site_footer: '' });
         const categoryForm = ref({ name: '' });
 
         const check = () => {
@@ -1299,7 +1320,8 @@ function getAdminHTML() {
               site_avatar: res.data.site_avatar || '',
               site_bio: res.data.site_bio || '',
               site_links: res.data.site_links || '',
-              site_author: res.data.site_author || ''
+              site_author: res.data.site_author || '',
+              site_footer: res.data.site_footer || ''
             };
           } catch(e) {}
         };
