@@ -751,7 +751,7 @@ function getFrontendHTML(settings) {
     fetch('/api/categories').then(r=>r.json()).then(cats=>{
       const list = document.getElementById('category-list');
       if(cats && Array.isArray(cats) && cats.length > 0) {
-        list.innerHTML = cats.map(c=>'<a href="/?category='+encodeURIComponent(c.name)+'">📂 '+c.name+'</a>').join('');
+        list.innerHTML = '<a href="/">🏠 全部</a>' + cats.map(c=>'<a href="/?category='+encodeURIComponent(c.name)+'">📂 '+c.name+'</a>').join('');
       }
     });
     fetch('/api/links').then(r=>r.json()).then(links=>{
@@ -766,12 +766,18 @@ function getFrontendHTML(settings) {
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const posts = await res.json();
         const app = document.getElementById('app');
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentCategory = urlParams.get('category');
+        let html = '';
+        if (currentCategory) {
+          html += '<div style="margin-bottom:16px"><a href="/" style="display:inline-block;padding:8px 20px;background:#19c8b9;color:#fff;text-decoration:none;border-radius:50px;font-weight:600;font-size:0.9em;box-shadow:0 4px 0 0 #11a89b">← 返回首页</a> <span style="color:#794f27;font-weight:600;margin-left:8px">当前分类：' + currentCategory + '</span></div>';
+        }
         if (!posts || posts.length === 0) {
-          app.innerHTML = '<p style="text-align:center;color:#9f927d;">暂无文章</p>';
+          app.innerHTML = html + '<p style="text-align:center;color:#9f927d;">暂无文章</p>';
           return;
         }
         const formatDate = (d) => { const dt = new Date(d); return dt.getFullYear() + String(dt.getMonth()+1).padStart(2,'0'); };
-        app.innerHTML = posts.map(post => {
+        app.innerHTML = html + posts.map(post => {
           const cover = post.cover_image ? '<img src="' + post.cover_image + '" alt="' + post.title + '">' : '<span style="color:#9f927d">暂无封面</span>';
           const tagColors = ['#19c8b9','#f5c31c','#e05a5a','#889df0','#8ac68a','#e59266','#b77dee','#f8a6b2'];
           const tags = post.tags ? post.tags.split(',').map((t,i) => '<span style="display:inline-block;padding:2px 10px;background:' + tagColors[i % tagColors.length] + ';border-radius:50px;font-size:0.75em;color:#fff;font-weight:600;margin-left:6px">' + t.trim() + '</span>').join('') : '';
@@ -982,7 +988,7 @@ function getPostHTML(post, settings) {
     fetch('/api/categories').then(r=>r.json()).then(cats=>{
       const list = document.getElementById('category-list');
       if(cats && Array.isArray(cats) && cats.length > 0) {
-        list.innerHTML = cats.map(c=>'<a href="/?category='+encodeURIComponent(c.name)+'">📂 '+c.name+'</a>').join('');
+        list.innerHTML = '<a href="/">🏠 全部</a>' + cats.map(c=>'<a href="/?category='+encodeURIComponent(c.name)+'">📂 '+c.name+'</a>').join('');
       }
     });
     fetch('/api/links').then(r=>r.json()).then(links=>{
