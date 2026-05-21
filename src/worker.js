@@ -1492,11 +1492,11 @@ function getAdminHTML() {
             case 'italic': insert = '*' + (selected || '斜体文字') + '*'; break;
             case 'link': insert = '[' + (selected || '链接文字') + '](https://)'; break;
             case 'image': insert = '![' + (selected || '图片描述') + '](https://图片地址)'; break;
-            case 'code': insert = selected.indexOf('\n') >= 0 ? '```\n' + (selected || '代码') + '\n```' : '`' + (selected || '代码') + '`'; break;
+            case 'code': var hasNL = selected.indexOf(String.fromCharCode(10)) >= 0; insert = hasNL ? '```' + String.fromCharCode(10) + (selected || '代码') + String.fromCharCode(10) + '```' : '`' + (selected || '代码') + '`'; break;
             case 'ul': insert = '- ' + (selected || '列表项'); break;
             case 'ol': insert = '1. ' + (selected || '列表项'); break;
             case 'quote': insert = '> ' + (selected || '引用内容'); break;
-            case 'hr': insert = '\n---\n'; break;
+            case 'hr': insert = String.fromCharCode(10) + '---' + String.fromCharCode(10); break;
           }
           form.value.content = text.substring(0, start) + insert + text.substring(end);
           setTimeout(() => { textarea.focus(); textarea.selectionStart = start + insert.length; textarea.selectionEnd = start + insert.length; }, 0);
