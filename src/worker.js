@@ -764,19 +764,27 @@ function getFrontendHTML(settings) {
     footer { text-align: center; padding: 30px 20px; color: #9f927d; font-size: 0.85em; font-weight: 500; }
     
     @media (max-width: 768px) {
-      header { padding: 30px 16px; }
-      header h1 { font-size: 1.8em; }
-      header p { font-size: 0.95em; }
-      main { flex-direction: column; padding: 0 16px; gap: 20px; }
-      .sidebar { width: 100%; }
-      .profile-card { padding: 20px; }
-      .profile-card .avatar { width: 60px; height: 60px; }
+      header { padding: 24px 16px; }
+      header h1 { font-size: 1.6em; }
+      header p { font-size: 0.9em; }
+      main { flex-direction: column; padding: 0 12px; gap: 16px; margin-top: 16px; }
+      .sidebar { width: 100%; order: 2; }
+      .profile-card { padding: 16px; border-radius: 16px; }
+      .profile-card .avatar { width: 56px; height: 56px; }
       .profile-card .name { font-size: 1em; }
-      .post-card { flex-direction: column; }
-      .post-card .post-cover { width: 100%; height: 180px; }
-      .post-card .post-content { padding: 16px; }
-      .post-card h2 { font-size: 1.1em; }
-      .post-card a.read-more { width: 100%; text-align: center; }
+      .profile-card .bio { font-size: 0.8em; }
+      .profile-card .stats { gap: 12px; }
+      .profile-card .stat-num { font-size: 1em; }
+      .profile-card .category-list a, .profile-card .link-list a { padding: 6px 10px; font-size: 0.8em; }
+      .post-list { width: 100%; order: 1; gap: 12px; }
+      .post-card { flex-direction: column; border-radius: 16px; }
+      .post-card .post-cover { width: 100%; height: 160px; }
+      .post-card .post-content { padding: 14px; }
+      .post-card h2 { font-size: 1.05em; margin-bottom: 6px; }
+      .post-card .excerpt { font-size: 0.85em; }
+      .post-card .meta { font-size: 0.75em; gap: 8px; flex-wrap: wrap; }
+      .post-card a.read-more { width: 100%; text-align: center; padding: 10px; font-size: 0.85em; }
+      footer { padding: 20px 16px; font-size: 0.8em; }
     }
   </style>
 </head>
@@ -996,19 +1004,27 @@ function getPostHTML(post, settings) {
     footer { text-align: center; padding: 30px 20px; color: #9f927d; font-size: 0.85em; font-weight: 500; }
     
     @media (max-width: 768px) {
-      header { padding: 30px 16px; }
-      header h1 { font-size: 1.8em; }
-      header p { font-size: 0.95em; }
-      main { flex-direction: column; padding: 0 16px; gap: 20px; }
-      .sidebar { width: 100%; }
-      .profile-card { padding: 20px; }
-      .profile-card .avatar { width: 60px; height: 60px; }
+      header { padding: 24px 16px; }
+      header h1 { font-size: 1.6em; }
+      header p { font-size: 0.9em; }
+      main { flex-direction: column; padding: 0 12px; gap: 16px; margin-top: 16px; }
+      .sidebar { width: 100%; order: 2; }
+      .profile-card { padding: 16px; border-radius: 16px; }
+      .profile-card .avatar { width: 56px; height: 56px; }
       .profile-card .name { font-size: 1em; }
-      .post-card { flex-direction: column; }
-      .post-card .post-cover { width: 100%; height: 180px; }
-      .post-card .post-content { padding: 16px; }
-      .post-card h2 { font-size: 1.1em; }
-      .post-card a.read-more { width: 100%; text-align: center; }
+      .profile-card .bio { font-size: 0.8em; }
+      .profile-card .stats { gap: 12px; }
+      .profile-card .stat-num { font-size: 1em; }
+      .profile-card .category-list a, .profile-card .link-list a { padding: 6px 10px; font-size: 0.8em; }
+      .post-list { width: 100%; order: 1; gap: 12px; }
+      .post-card { flex-direction: column; border-radius: 16px; }
+      .post-card .post-cover { width: 100%; height: 160px; }
+      .post-card .post-content { padding: 14px; }
+      .post-card h2 { font-size: 1.05em; margin-bottom: 6px; }
+      .post-card .excerpt { font-size: 0.85em; }
+      .post-card .meta { font-size: 0.75em; gap: 8px; flex-wrap: wrap; }
+      .post-card a.read-more { width: 100%; text-align: center; padding: 10px; font-size: 0.85em; }
+      footer { padding: 20px 16px; font-size: 0.8em; }
     }
   </style>
 </head>
@@ -1174,19 +1190,25 @@ function getAdminHTML() {
     
     @media (max-width: 768px) {
       .admin-layout { flex-direction: column; }
-      .sidebar { width: 100%; flex-direction: row; overflow-x: auto; }
-      .sidebar-header { display: none; }
-      .sidebar-menu { display: flex; padding: 8px; gap: 4px; }
-      .sidebar-menu a { white-space: nowrap; padding: 8px 14px; margin: 0; }
-      .sidebar-footer { display: none; }
+      .sidebar { width: 100%; flex-direction: row; overflow-x: auto; padding: 0; }
+      .sidebar-header { padding: 12px 16px; }
+      .sidebar-header h1 { font-size: 15px; }
+      .sidebar-menu { display: flex; padding: 8px 12px; gap: 6px; flex-wrap: nowrap; overflow-x: auto; }
+      .sidebar-menu a { white-space: nowrap; padding: 8px 12px; margin: 0; font-size: 13px; border-radius: 8px; }
+      .sidebar-footer { padding: 8px 12px; }
+      .sidebar-footer button { padding: 8px 16px; font-size: 13px; }
       .main-content { padding: 16px; }
-      .page-header { flex-direction: column; gap: 12px; align-items: flex-start; }
-      .page-header h2 { font-size: 1.3em; }
-      table { font-size: 0.85em; }
-      th, td { padding: 10px 8px; }
-      .form-row { grid-template-columns: 1fr; }
-      .card { padding: 16px; }
-      .btn { width: 100%; text-align: center; }
+      .page-header { flex-direction: column; gap: 8px; align-items: flex-start; }
+      .page-header h2 { font-size: 1.2em; }
+      .card { padding: 14px; border-radius: 16px; margin-bottom: 12px; }
+      .form-row { grid-template-columns: 1fr; gap: 12px; }
+      .form-group { margin-bottom: 14px; }
+      .form-group label { font-size: 13px; margin-bottom: 6px; }
+      .form-group input, .form-group textarea, .form-group select { padding: 10px 14px; font-size: 14px; border-radius: 12px; }
+      .btn { padding: 10px 20px; font-size: 14px; }
+      .btn-cancel { padding: 10px 20px; font-size: 14px; }
+      .actions .edit, .actions .delete { padding: 5px 10px; font-size: 12px; }
+      .category-item { padding: 10px 12px; border-radius: 10px; }
     }
   </style>
 </head>
