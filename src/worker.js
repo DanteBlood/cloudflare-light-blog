@@ -1237,9 +1237,9 @@ function getAdminHTML() {
         <button @click="login">登录</button>
       </div>
     </div>
-    <button class="admin-mobile-toggle" @click="toggleAdminNav">☰</button>
-    <div class="admin-mobile-overlay" :class="{show: adminNavOpen}" @click="toggleAdminNav"></div>
     <div v-else class="admin-layout">
+      <button class="admin-mobile-toggle" @click="toggleAdminNav">☰</button>
+      <div class="admin-mobile-overlay" :class="{show: adminNavOpen}" @click="toggleAdminNav"></div>
       <nav class="sidebar" :class="{open: adminNavOpen}">
         <div class="sidebar-header">
           <h1>管理后台</h1>
