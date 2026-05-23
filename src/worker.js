@@ -746,7 +746,7 @@ function getFrontendHTML(settings) {
     .post-card .post-content { flex: 1; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; min-width: 0; overflow: hidden; }
     .post-card h2 { font-size: 1.2em; margin-bottom: 8px; color: #794f27; font-weight: 700; }
     .post-card h2 a { color: #794f27; text-decoration: none; }
-    .post-card .meta { display: flex; flex-wrap: nowrap; gap: 12px; color: #9f927d; font-size: 0.8em; margin-top: 12px; font-weight: 600; }
+    .post-card .meta { display: flex; flex-wrap: nowrap; align-items: center; gap: 12px; color: #9f927d; font-size: 0.8em; margin-top: 12px; font-weight: 600; }
     .post-card a.read-more { display: inline-block; padding: 8px 20px; background: #19c8b9; color: #fff; text-decoration: none; border-radius: 50px; font-size: 0.85em; font-weight: 600; align-self: flex-start; margin-top: 12px; box-shadow: 0 4px 0 0 #11a89b; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
     .post-card a.read-more:hover { transform: translateY(-1px); box-shadow: 0 5px 0 0 #11a89b; }
     .post-card a.read-more:active { transform: translateY(2px); box-shadow: 0 1px 0 0 #11a89b; }
@@ -872,7 +872,7 @@ function getFrontendHTML(settings) {
         app.innerHTML = html + posts.map(post => {
           const cover = post.cover_image ? '<img src="' + post.cover_image + '" alt="' + post.title + '">' : '<span style="color:#9f927d">暂无封面</span>';
           const tagColors = ['#19c8b9','#f5c31c','#e05a5a','#889df0','#8ac68a','#e59266','#b77dee','#f8a6b2'];
-          const tags = post.tags ? post.tags.split(',').map((t,i) => '<span style="display:inline-block;padding:2px 10px;background:' + tagColors[i % tagColors.length] + ';border-radius:50px;font-size:0.75em;color:#fff;font-weight:600;margin-right:6px">' + t.trim() + '</span>').join('') : '';
+          const tags = post.tags ? post.tags.split(',').map((t,i) => '<span style="display:inline-flex;align-items:center;gap:4px;margin-right:10px"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:' + tagColors[i % tagColors.length] + '"></span><span style="color:' + tagColors[i % tagColors.length] + ';font-size:0.8em;font-weight:600">' + t.trim() + '</span></span>').join('') : '';
           const excerpt = post.password ? '🔒 该文章受到密码保护' : (post.content ? post.content.substring(0, 30) + (post.content.length > 30 ? '...' : '') : '');
           return '<article class="post-card">' +
             '<div class="post-cover">' + cover + '</div>' +
