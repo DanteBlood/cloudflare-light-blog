@@ -1345,7 +1345,7 @@ function getAdminHTML() {
                 <div class="form-group">
                   <label>网站图标（建议ICO格式）</label>
                   <div style="display:flex;gap:12px">
-                    <div class="cover-upload" @click="$refs.faviconInput.click()" @dragover.prevent @drop.prevent="handleFaviconDrop" style="flex:1;padding:20px;border:2px dashed #c4b89e;border-radius:12px;background:#f0e8d8;min-height:80px;display:flex;align-items:center;justify-content:center">
+                    <div class="cover-upload" @click="$refs.faviconInput.click()" @dragover.prevent @drop.prevent="handleFaviconDrop" style="width:120px;padding:16px;border:2px dashed #c4b89e;border-radius:12px;background:#f0e8d8;min-height:80px;display:flex;align-items:center;justify-content:center">
                       <input ref="faviconInput" type="file" @change="handleFavicon" accept=".ico,image/*" style="display:none">
                       <div v-if="!settingsForm.site_favicon"><p style="color:#9f927d;font-size:13px">点击或拖拽上传</p></div>
                       <img v-else :src="settingsForm.site_favicon" style="width:40px;height:40px">
@@ -1367,7 +1367,7 @@ function getAdminHTML() {
                 <div class="form-group">
                   <label>个人头像</label>
                   <div style="display:flex;gap:12px">
-                    <div class="cover-upload" @click="$refs.avatarInput.click()" @dragover.prevent @drop.prevent="handleAvatarDrop" style="flex:1;padding:20px;border:2px dashed #c4b89e;border-radius:12px;background:#f0e8d8;min-height:100px;display:flex;align-items:center;justify-content:center">
+                    <div class="cover-upload" @click="$refs.avatarInput.click()" @dragover.prevent @drop.prevent="handleAvatarDrop" style="width:120px;padding:16px;border:2px dashed #c4b89e;border-radius:12px;background:#f0e8d8;min-height:100px;display:flex;align-items:center;justify-content:center">
                       <input ref="avatarInput" type="file" @change="handleAvatar" accept="image/*" style="display:none">
                       <div v-if="!settingsForm.site_avatar"><p style="color:#9f927d;font-size:13px">点击或拖拽上传</p></div>
                       <img v-else :src="settingsForm.site_avatar" style="width:64px;height:64px;border-radius:50%">
