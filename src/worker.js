@@ -730,7 +730,7 @@ function getFrontendHTML(settings) {
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: Nunito, 'Noto Sans SC', sans-serif; background: #f8f8f0; color: #725d42; }
+    body { font-family: Nunito, 'Noto Sans SC', sans-serif; background: var(--body-bg, #f8f8f0); color: var(--text-body, #725d42); }
     header { background: linear-gradient(135deg, #7DC395 0%, #5BAF7A 100%); color: #fff; padding: 40px 20px; text-align: center; position: relative; overflow: hidden; }
     header::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 40px; background: linear-gradient(transparent, rgba(0,0,0,0.05)); }
     header h1 { font-size: 2.5em; font-weight: 800; margin-bottom: 8px; letter-spacing: 0.02em; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
@@ -987,7 +987,7 @@ function getPostHTML(post, settings) {
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: Nunito, 'Noto Sans SC', sans-serif; background: #f8f8f0; color: #725d42; }
+    body { font-family: Nunito, 'Noto Sans SC', sans-serif; background: var(--body-bg, #f8f8f0); color: var(--text-body, #725d42); }
     header { background: linear-gradient(135deg, #7DC395 0%, #5BAF7A 100%); color: #fff; padding: 40px 20px; text-align: center; position: relative; overflow: hidden; }
     header::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 40px; background: linear-gradient(transparent, rgba(0,0,0,0.05)); }
     header h1 { font-size: 2.5em; font-weight: 800; margin-bottom: 8px; letter-spacing: 0.02em; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
@@ -1132,15 +1132,15 @@ function getAdminHTML() {
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: Nunito, 'Noto Sans SC', sans-serif; background: #f8f8f0; color: #725d42; }
-    .login { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #7DC395, #5BAF7A); }
+    body { font-family: Nunito, 'Noto Sans SC', sans-serif; background: var(--body-bg, #f8f8f0); color: var(--text-body, #725d42); }
+    .login { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--header-bg, linear-gradient(135deg, #7DC395, #5BAF7A)); }
     .login-box { background: #f7f3df; padding: 40px; border-radius: 20px; width: 100%; max-width: 400px; text-align: center; border: 2px solid #e8e0cc; box-shadow: 0 4px 10px rgba(107, 92, 67, 0.42); }
     .login-box h1 { margin-bottom: 20px; color: #794f27; font-weight: 700; }
     .login-box input { width: 100%; padding: 12px 18px; margin-bottom: 16px; border: 2.5px solid #c4b89e; border-radius: 50px; font-size: 14px; background: #f8f8f0; color: #725d42; box-shadow: 0 3px 0 0 #d4c9b4; outline: none; }
     .login-box input:focus { border-color: #ffcc00; box-shadow: 0 3px 0 0 #e0b800; }
     .login-box button { width: 100%; padding: 14px; background: #19c8b9; color: #fff; border: none; border-radius: 50px; font-size: 16px; font-weight: 600; cursor: pointer; box-shadow: 0 5px 0 0 #11a89b; }
     .admin-layout { display: flex; min-height: 100vh; }
-    .sidebar { width: 240px; background: linear-gradient(180deg, #7DC395, #5BAF7A); color: #fff; flex-shrink: 0; }
+    .sidebar { width: 240px; background: var(--sidebar-bg, linear-gradient(180deg, #7DC395, #5BAF7A)); color: #fff; flex-shrink: 0; }
     .sidebar-header { padding: 24px 20px; text-align: center; border-bottom: 2px solid rgba(255,255,255,0.2); }
     .sidebar-header h1 { font-size: 18px; }
     .sidebar-menu { padding: 16px 12px; }
@@ -1151,14 +1151,14 @@ function getAdminHTML() {
     .main-content { flex: 1; padding: 30px; }
     .page-header { margin-bottom: 24px; }
     .page-header h2 { color: #794f27; font-size: 1.5em; }
-    .btn { padding: 10px 24px; background: #19c8b9; color: #fff; border: none; border-radius: 50px; cursor: pointer; font-weight: 600; box-shadow: 0 4px 0 0 #11a89b; }
+    .btn { padding: 10px 24px; background: var(--btn-bg, #19c8b9); color: #fff; border: none; border-radius: 50px; cursor: pointer; font-weight: 600; box-shadow: 0 4px 0 0 var(--btn-shadow, #11a89b); }
     .btn:hover { transform: translateY(-1px); }
-    .btn-danger { background: #e05a5a; box-shadow: 0 4px 0 0 #c94444; }
+    .btn-danger { background: var(--danger-bg, #e05a5a); box-shadow: 0 4px 0 0 var(--danger-shadow, #c94444); }
     .btn-cancel { background: #f0e8d8; color: #725d42; border: 2px solid #c4b89e; box-shadow: none; }
-    .card { background: #f7f3df; border-radius: 20px; padding: 24px; box-shadow: 0 4px 10px rgba(107,92,67,0.42); border: 2px solid #e8e0cc; margin-bottom: 16px; }
+    .card { background: var(--card-bg, #f7f3df); border-radius: 20px; padding: 24px; box-shadow: 0 4px 10px rgba(107,92,67,0.42); border: 2px solid var(--card-border, #e8e0cc); margin-bottom: 16px; }
     .form-group { margin-bottom: 18px; }
     .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #794f27; }
-    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 12px 18px; border: 2.5px solid #c4b89e; border-radius: 50px; font-size: 14px; background: #f8f8f0; color: #725d42; box-shadow: 0 3px 0 0 #d4c9b4; }
+    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 12px 18px; border: 2.5px solid var(--input-border, #c4b89e); border-radius: 50px; font-size: 14px; background: #f8f8f0; color: var(--text-body, #725d42); box-shadow: 0 3px 0 0 var(--input-shadow, #d4c9b4); }
     .form-group textarea { border-radius: 18px; min-height: 80px; resize: vertical; }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     .actions { display: flex; gap: 6px; }
@@ -1340,10 +1340,8 @@ function getAdminHTML() {
             <div class="editor-main">
               <div class="card">
                 <h3 style="color:#794f27;margin-bottom:16px">网站设置</h3>
-                <div style="display:flex;gap:16px">
-                  <div class="form-group" style="width:35%"><label>网站标题</label><input v-model="settingsForm.site_name"></div>
-                  <div class="form-group" style="flex:1"><label>网站副标题</label><input v-model="settingsForm.site_description"></div>
-                </div>
+                <div class="form-group"><label>网站标题</label><input v-model="settingsForm.site_name"></div>
+                <div class="form-group"><label>网站副标题</label><input v-model="settingsForm.site_description"></div>
                 <div class="form-group">
                   <label>网站图标（建议ICO格式）</label>
                   <div style="display:flex;gap:12px">
@@ -1357,6 +1355,16 @@ function getAdminHTML() {
                       <button @click="settingsForm.site_favicon=''" style="padding:8px 16px;background:#e05a5a;color:#fff;border:none;border-radius:50px;cursor:pointer;font-size:13px;font-weight:600;box-shadow:0 3px 0 0 #c94444;white-space:nowrap">删除</button>
                     </div>
                   </div>
+                </div>
+                <div class="form-group">
+                  <label>主题风格</label>
+                  <select v-model="settingsForm.site_theme" @change="applyTheme">
+                    <option value="animal-forest">🌲 动物森林</option>
+                    <option value="ocean-breeze">🌊 海洋微风</option>
+                    <option value="sunset-glow">🌅 日落余晖</option>
+                    <option value="spring-garden">🌸 春日花园</option>
+                  </select>
+                  <p style="font-size:12px;color:#9f927d;margin-top:4px">选择不同的主题风格，也可自行开发新主题</p>
                 </div>
                 <div class="form-group"><label>网站页脚（HTML）</label><textarea v-model="settingsForm.site_footer" rows="3"></textarea></div>
                 <div class="form-group"><label>自定义JS</label><textarea v-model="settingsForm.custom_js" rows="4"></textarea></div>
@@ -1414,7 +1422,7 @@ function getAdminHTML() {
         const toast = ref('');
         const categories = ref([]);
         const currentPage = ref('posts');
-        const settingsForm = ref({ site_name: '', site_description: '', site_favicon: '', site_avatar: '', site_bio: '', site_links: '', site_author: '', site_footer: '', custom_js: '' });
+        const settingsForm = ref({ site_name: '', site_description: '', site_favicon: '', site_avatar: '', site_bio: '', site_links: '', site_author: '', site_footer: '', custom_js: '', site_theme: 'animal-forest' });
         const categoryForm = ref({ name: '', slug: '', description: '' });
         const editingCategory = ref(null);
         const trashPosts = ref([]);
@@ -1425,7 +1433,7 @@ function getAdminHTML() {
         const logout = () => { localStorage.removeItem('token'); logged.value = false; };
         const loadPosts = async () => { try { const r = await api('/api/admin/posts'); posts.value = r.data; } catch (e) {} };
         const loadCategories = async () => { try { const r = await api('/api/categories'); categories.value = r.data; } catch (e) {} };
-        const loadSettings = async () => { try { const r = await api('/api/settings'); settingsForm.value = { site_name: r.data.site_name || '', site_description: r.data.site_description || '', site_favicon: r.data.site_favicon || '', site_avatar: r.data.site_avatar || '', site_bio: r.data.site_bio || '', site_links: r.data.site_links || '', site_author: r.data.site_author || '', site_footer: r.data.site_footer || '', custom_js: r.data.custom_js || '' }; } catch (e) {} };
+        const loadSettings = async () => { try { const r = await api('/api/settings'); settingsForm.value = { site_name: r.data.site_name || '', site_description: r.data.site_description || '', site_favicon: r.data.site_favicon || '', site_avatar: r.data.site_avatar || '', site_bio: r.data.site_bio || '', site_links: r.data.site_links || '', site_author: r.data.site_author || '', site_footer: r.data.site_footer || '', custom_js: r.data.custom_js || '', site_theme: r.data.site_theme || 'animal-forest' }; } catch (e) {} };
         const loadTrash = async () => { try { const r = await api('/api/admin/trash'); trashPosts.value = r.data; } catch (e) {} };
         const showToast = (m) => { toast.value = m; setTimeout(() => toast.value = '', 2000); };
         const showConfirm = (t, m) => new Promise(r => { confirmModal.value = { show: true, title: t, message: m, onConfirm: () => { confirmModal.value.show = false; r(true); } }; });
@@ -1474,8 +1482,99 @@ function getAdminHTML() {
           setTimeout(() => { ta.focus(); ta.selectionStart = ta.selectionEnd = start + insert.length; }, 0);
         };
 
+        // 主题配置
+        const themes = {
+          'animal-forest': {
+            name: '动物森林',
+            headerBg: 'linear-gradient(180deg, #7DC395 0%, #5BAF7A 100%)',
+            sidebarBg: 'linear-gradient(180deg, #7DC395, #5BAF7A)',
+            btnBg: '#19c8b9',
+            btnShadow: '#11a89b',
+            dangerBg: '#e05a5a',
+            dangerShadow: '#c94444',
+            cardBg: '#f7f3df',
+            cardBorder: '#e8e0cc',
+            bodyBg: '#f8f8f0',
+            textPrimary: '#794f27',
+            textBody: '#725d42',
+            textSecondary: '#9f927d',
+            inputBorder: '#c4b89e',
+            inputShadow: '#d4c9b4'
+          },
+          'ocean-breeze': {
+            name: '海洋微风',
+            headerBg: 'linear-gradient(180deg, #4ECDC4 0%, #2C9C93 100%)',
+            sidebarBg: 'linear-gradient(180deg, #4ECDC4, #2C9C93)',
+            btnBg: '#4ECDC4',
+            btnShadow: '#2C9C93',
+            dangerBg: '#E74C3C',
+            dangerShadow: '#C0392B',
+            cardBg: '#F0F9F8',
+            cardBorder: '#B8E6E1',
+            bodyBg: '#F5FCFB',
+            textPrimary: '#1A535C',
+            textBody: '#2C3E50',
+            textSecondary: '#7F8C8D',
+            inputBorder: '#B8E6E1',
+            inputShadow: '#A0D8D2'
+          },
+          'sunset-glow': {
+            name: '日落余晖',
+            headerBg: 'linear-gradient(180deg, #F39C12 0%, #E74C3C 100%)',
+            sidebarBg: 'linear-gradient(180deg, #F39C12, #E74C3C)',
+            btnBg: '#F39C12',
+            btnShadow: '#D68910',
+            dangerBg: '#E74C3C',
+            dangerShadow: '#C0392B',
+            cardBg: '#FEF9E7',
+            cardBorder: '#F9E79F',
+            bodyBg: '#FEFCF3',
+            textPrimary: '#7B3F00',
+            textBody: '#5D4E37',
+            textSecondary: '#B7950B',
+            inputBorder: '#F9E79F',
+            inputShadow: '#F7DC6F'
+          },
+          'spring-garden': {
+            name: '春日花园',
+            headerBg: 'linear-gradient(180deg, #FF6B9D 0%, #C44569 100%)',
+            sidebarBg: 'linear-gradient(180deg, #FF6B9D, #C44569)',
+            btnBg: '#FF6B9D',
+            btnShadow: '#C44569',
+            dangerBg: '#E74C3C',
+            dangerShadow: '#C0392B',
+            cardBg: '#FFF0F5',
+            cardBorder: '#FFB6C1',
+            bodyBg: '#FFF5F8',
+            textPrimary: '#8B1A4A',
+            textBody: '#5D4E37',
+            textSecondary: '#C44569',
+            inputBorder: '#FFB6C1',
+            inputShadow: '#FF91A4'
+          }
+        };
+
+        const applyTheme = () => {
+          const theme = themes[settingsForm.value.site_theme] || themes['animal-forest'];
+          const root = document.documentElement;
+          root.style.setProperty('--header-bg', theme.headerBg);
+          root.style.setProperty('--sidebar-bg', theme.sidebarBg);
+          root.style.setProperty('--btn-bg', theme.btnBg);
+          root.style.setProperty('--btn-shadow', theme.btnShadow);
+          root.style.setProperty('--danger-bg', theme.dangerBg);
+          root.style.setProperty('--danger-shadow', theme.dangerShadow);
+          root.style.setProperty('--card-bg', theme.cardBg);
+          root.style.setProperty('--card-border', theme.cardBorder);
+          root.style.setProperty('--body-bg', theme.bodyBg);
+          root.style.setProperty('--text-primary', theme.textPrimary);
+          root.style.setProperty('--text-body', theme.textBody);
+          root.style.setProperty('--text-secondary', theme.textSecondary);
+          root.style.setProperty('--input-border', theme.inputBorder);
+          root.style.setProperty('--input-shadow', theme.inputShadow);
+        };
+
         onMounted(() => { check(); loadCategories(); loadSettings(); loadTrash(); });
-        return { logged, password, login, logout, posts, editingId, form, coverPreview, toast, openAdd, toggleEdit, handleCoverChange, handleDrop, deleteCover, savePost, deletePost, categories, currentPage, categoryForm, saveCategory, deleteCategory, editCategory, editingCategory, settingsForm, saveSettings, handleFavicon, handleFaviconDrop, handleAvatar, handleAvatarDrop, trashPosts, restorePost, permanentDelete, emptyTrash, confirmModal, showConfirm, insertMd };
+        return { logged, password, login, logout, posts, editingId, form, coverPreview, toast, openAdd, toggleEdit, handleCoverChange, handleDrop, deleteCover, savePost, deletePost, categories, currentPage, categoryForm, saveCategory, deleteCategory, editCategory, editingCategory, settingsForm, saveSettings, handleFavicon, handleFaviconDrop, handleAvatar, handleAvatarDrop, trashPosts, restorePost, permanentDelete, emptyTrash, confirmModal, showConfirm, insertMd, applyTheme };
       }
     }).mount('#app');
   <\/script>
