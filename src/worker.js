@@ -776,15 +776,14 @@ function getFrontendHTML(settings) {
       display: none;
       align-items: center;
       justify-content: center;
-      cursor: zoom-out;
     }
     .lightbox.active { display: flex; }
     .lightbox img {
-      max-width: 90%;
-      max-height: 90%;
-      border-radius: 12px;
+      max-width: 85%;
+      max-height: 85%;
+      border: 4px solid #555;
+      border-radius: 8px;
       box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-      cursor: default;
     }
     .lightbox-close {
       position: absolute;
@@ -801,8 +800,40 @@ function getFrontendHTML(settings) {
       display: flex;
       align-items: center;
       justify-content: center;
+      z-index: 1;
     }
     .lightbox-close:hover { background: rgba(255,255,255,0.3); }
+    .lightbox-prev, .lightbox-next {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 50px;
+      height: 50px;
+      background: rgba(255,255,255,0.2);
+      border: none;
+      border-radius: 50%;
+      color: #fff;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+    }
+    .lightbox-prev { left: 20px; }
+    .lightbox-next { right: 20px; }
+    .lightbox-prev:hover, .lightbox-next:hover { background: rgba(255,255,255,0.3); }
+    .lightbox-counter {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #fff;
+      font-size: 14px;
+      background: rgba(0,0,0,0.5);
+      padding: 6px 16px;
+      border-radius: 20px;
+    }
     .post-article img { cursor: zoom-in; transition: transform 0.2s; }
     .post-article img:hover { transform: scale(1.02); }
     .back-to-top {
@@ -888,9 +919,12 @@ function getFrontendHTML(settings) {
     </div>
   </main>
   <!-- 灯箱 -->
-  <div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
-    <button class="lightbox-close" onclick="closeLightbox(event)">×</button>
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" onclick="closeLightbox()">×</button>
+    <button class="lightbox-prev" onclick="prevImage()">‹</button>
     <img id="lightbox-img" src="" alt="">
+    <button class="lightbox-next" onclick="nextImage()">›</button>
+    <div class="lightbox-counter" id="lightbox-counter"></div>
   </div>
   
   <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
@@ -910,34 +944,63 @@ function getFrontendHTML(settings) {
     });
     
     // 灯箱功能
+    var lightboxImages = [];
+    var currentIndex = 0;
+    
     function initLightbox() {
-      var images = document.querySelectorAll('.post-article img');
-      images.forEach(function(img) {
+      lightboxImages = Array.from(document.querySelectorAll('.post-article img'));
+      lightboxImages.forEach(function(img, index) {
         img.addEventListener('click', function() {
-          openLightbox(this.src);
+          openLightbox(index);
         });
       });
     }
     
-    function openLightbox(src) {
-      document.getElementById('lightbox-img').src = src;
+    function openLightbox(index) {
+      currentIndex = index;
+      updateLightbox();
       document.getElementById('lightbox').classList.add('active');
       document.body.style.overflow = 'hidden';
     }
     
-    function closeLightbox(event) {
-      if (event.target.id === 'lightbox' || event.target.classList.contains('lightbox-close')) {
-        document.getElementById('lightbox').classList.remove('active');
-        document.body.style.overflow = '';
+    function updateLightbox() {
+      if (lightboxImages.length > 0 && lightboxImages[currentIndex]) {
+        document.getElementById('lightbox-img').src = lightboxImages[currentIndex].src;
+        document.getElementById('lightbox-counter').textContent = (currentIndex + 1) + ' / ' + lightboxImages.length;
       }
     }
     
-    // ESC 键关闭灯箱
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') {
-        document.getElementById('lightbox').classList.remove('active');
-        document.body.style.overflow = '';
+    function prevImage() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        updateLightbox();
       }
+    }
+    
+    function nextImage() {
+      if (currentIndex < lightboxImages.length - 1) {
+        currentIndex++;
+        updateLightbox();
+      }
+    }
+    
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    
+    // ESC 键关闭灯箱，左右键切换图片
+    document.addEventListener('keydown', function(e) {
+      var lightbox = document.getElementById('lightbox');
+      if (!lightbox.classList.contains('active')) return;
+      if (e.key === 'Escape') closeLightbox();
+      else if (e.key === 'ArrowLeft') prevImage();
+      else if (e.key === 'ArrowRight') nextImage();
+    });
+    
+    // 点击背景关闭
+    document.getElementById('lightbox').addEventListener('click', function(e) {
+      if (e.target === this) closeLightbox();
     });
     
     function toggleNav() {
