@@ -763,6 +763,48 @@ function getFrontendHTML(settings) {
     .profile-card .category-list a:hover, .profile-card .link-list a:hover { background: #e6f9f6; border-color: #19c8b9; color: #11a89b; }
     .profile-card .category-list a:focus, .profile-card .link-list a:focus { outline: none; background: #f0e8d8; border-color: transparent; }
     footer { text-align: center; padding: 30px 20px; color: #9f927d; font-size: 0.85em; font-weight: 500; }
+    
+    /* 灯箱样式 */
+    .lightbox {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.9);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: zoom-out;
+    }
+    .lightbox.active { display: flex; }
+    .lightbox img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      cursor: default;
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 44px;
+      height: 44px;
+      background: rgba(255,255,255,0.2);
+      border: none;
+      border-radius: 50%;
+      color: #fff;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .lightbox-close:hover { background: rgba(255,255,255,0.3); }
+    .post-article img { cursor: zoom-in; transition: transform 0.2s; }
+    .post-article img:hover { transform: scale(1.02); }
     .back-to-top {
       position: fixed;
       bottom: 30px;
@@ -845,6 +887,12 @@ function getFrontendHTML(settings) {
       <p style="text-align:center;color:#9f927d;">加载中...</p>
     </div>
   </main>
+  <!-- 灯箱 -->
+  <div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+    <button class="lightbox-close" onclick="closeLightbox(event)">×</button>
+    <img id="lightbox-img" src="" alt="">
+  </div>
+  
   <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
   <footer>${settings.site_footer || '&copy; 2026 ' + siteName}</footer>
   ${settings.custom_js ? '<script>' + settings.custom_js + '<\/script>' : ''}
@@ -858,6 +906,37 @@ function getFrontendHTML(settings) {
         } else {
           btn.classList.remove('show');
         }
+      }
+    });
+    
+    // 灯箱功能
+    function initLightbox() {
+      var images = document.querySelectorAll('.post-article img');
+      images.forEach(function(img) {
+        img.addEventListener('click', function() {
+          openLightbox(this.src);
+        });
+      });
+    }
+    
+    function openLightbox(src) {
+      document.getElementById('lightbox-img').src = src;
+      document.getElementById('lightbox').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    
+    function closeLightbox(event) {
+      if (event.target.id === 'lightbox' || event.target.classList.contains('lightbox-close')) {
+        document.getElementById('lightbox').classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    }
+    
+    // ESC 键关闭灯箱
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        document.getElementById('lightbox').classList.remove('active');
+        document.body.style.overflow = '';
       }
     });
     
@@ -896,6 +975,37 @@ function getFrontendHTML(settings) {
         } else {
           btn.classList.remove('show');
         }
+      }
+    });
+    
+    // 灯箱功能
+    function initLightbox() {
+      var images = document.querySelectorAll('.post-article img');
+      images.forEach(function(img) {
+        img.addEventListener('click', function() {
+          openLightbox(this.src);
+        });
+      });
+    }
+    
+    function openLightbox(src) {
+      document.getElementById('lightbox-img').src = src;
+      document.getElementById('lightbox').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    
+    function closeLightbox(event) {
+      if (event.target.id === 'lightbox' || event.target.classList.contains('lightbox-close')) {
+        document.getElementById('lightbox').classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    }
+    
+    // ESC 键关闭灯箱
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        document.getElementById('lightbox').classList.remove('active');
+        document.body.style.overflow = '';
       }
     });
     
@@ -1079,6 +1189,48 @@ function getPostHTML(post, settings) {
     .back-link:hover { transform: translateY(-1px); box-shadow: 0 5px 0 0 #11a89b; }
     .back-link:active { transform: translateY(2px); box-shadow: 0 1px 0 0 #11a89b; }
     footer { text-align: center; padding: 30px 20px; color: #9f927d; font-size: 0.85em; font-weight: 500; }
+    
+    /* 灯箱样式 */
+    .lightbox {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.9);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: zoom-out;
+    }
+    .lightbox.active { display: flex; }
+    .lightbox img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      cursor: default;
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 44px;
+      height: 44px;
+      background: rgba(255,255,255,0.2);
+      border: none;
+      border-radius: 50%;
+      color: #fff;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .lightbox-close:hover { background: rgba(255,255,255,0.3); }
+    .post-article img { cursor: zoom-in; transition: transform 0.2s; }
+    .post-article img:hover { transform: scale(1.02); }
     .back-to-top {
       position: fixed;
       bottom: 30px;
@@ -1179,6 +1331,12 @@ function getPostHTML(post, settings) {
       </article>
     </div>
   </main>
+  <!-- 灯箱 -->
+  <div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+    <button class="lightbox-close" onclick="closeLightbox(event)">×</button>
+    <img id="lightbox-img" src="" alt="">
+  </div>
+  
   <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
   <footer>${settings.site_footer || '&copy; 2026 ' + siteName}</footer>
   ${settings.custom_js ? '<script>' + settings.custom_js + '<\/script>' : ''}
@@ -1197,6 +1355,37 @@ function getPostHTML(post, settings) {
       const list = document.getElementById('link-list');
       if(links && Array.isArray(links) && links.length > 0) {
         list.innerHTML = links.map(l=>'<a href="'+l.url+'" target="_blank">'+l.name+'</a>').join('');
+      }
+    });
+    
+    // 灯箱功能
+    function initLightbox() {
+      var images = document.querySelectorAll('.post-article img');
+      images.forEach(function(img) {
+        img.addEventListener('click', function() {
+          openLightbox(this.src);
+        });
+      });
+    }
+    
+    function openLightbox(src) {
+      document.getElementById('lightbox-img').src = src;
+      document.getElementById('lightbox').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    
+    function closeLightbox(event) {
+      if (event.target.id === 'lightbox' || event.target.classList.contains('lightbox-close')) {
+        document.getElementById('lightbox').classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    }
+    
+    // ESC 键关闭灯箱
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        document.getElementById('lightbox').classList.remove('active');
+        document.body.style.overflow = '';
       }
     });
     
@@ -1283,6 +1472,8 @@ function getPostHTML(post, settings) {
       document.querySelectorAll('pre code').forEach(function(block) {
         hljs.highlightElement(block);
       });
+      // 初始化灯箱
+      initLightbox();
     });
   </script>
 </body>
