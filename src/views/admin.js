@@ -286,67 +286,6 @@ export function getAdminHTML() {
             <button class="btn btn-cancel" @click="postPage=Math.min(Math.ceil(posts.length/postPageSize),postPage+1)" :style="{opacity:postPage>=Math.ceil(posts.length/postPageSize)?0.4:1}" :disabled="postPage>=Math.ceil(posts.length/postPageSize)" style="padding:8px 16px;font-size:14px">下一页</button>
           </div>
         </div></div>
-        <div v-if="currentPage==='new__removed'">
-          <div class="page-header"><h2>{{editingId?'编辑文章':'新建文章'}}</h2></div>
-          <button class="btn btn-cancel" @click="currentPage='posts';editingId=null" style="margin-bottom:16px">返回列表</button>
-          <div class="editor-layout">
-            <div class="editor-main"><div class="card" style="display:flex;flex-direction:column;height:100%">
-              <div class="form-group"><label>标题</label><input v-model="form.title"></div>
-              <div class="form-group" style="flex:1;display:flex;flex-direction:column">
-                <label>内容</label>
-                <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px">
-                  <button type="button" @click="insertMd('heading')" style="padding:4px 10px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;color:#725d42">标题</button>
-                  <button type="button" @click="insertMd('bold')" style="padding:4px 10px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:6px;cursor:pointer;font-size:12px;font-weight:700;color:#725d42">B</button>
-                  <button type="button" @click="insertMd('italic')" style="padding:4px 10px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:6px;cursor:pointer;font-size:12px;font-style:italic;color:#725d42">I</button>
-                  <button type="button" @click="insertMd('link')" style="padding:4px 10px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:6px;cursor:pointer;font-size:12px;color:#725d42">🔗</button>
-                  <button type="button" @click="insertMd('image')" style="padding:4px 10px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:6px;cursor:pointer;font-size:12px;color:#725d42">🖼</button>
-                  <button type="button" @click="insertMd('code')" style="padding:4px 10px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:6px;cursor:pointer;font-size:12px;color:#725d42">代码</button>
-                  <button type="button" @click="insertMd('ul')" style="padding:4px 10px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:6px;cursor:pointer;font-size:12px;color:#725d42">•列表</button>
-                  <button type="button" @click="insertMd('ol')" style="padding:4px 10px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:6px;cursor:pointer;font-size:12px;color:#725d42">1.序号</button>
-                  <button type="button" @click="insertMd('quote')" style="padding:4px 10px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:6px;cursor:pointer;font-size:12px;color:#725d42">❝引用</button>
-                  <button type="button" @click="insertMd('hr')" style="padding:4px 10px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:6px;cursor:pointer;font-size:12px;color:#725d42">—分割线</button>
-                </div>
-                <textarea v-model="form.content" style="flex:1;min-height:300px"></textarea>
-              </div>
-              <button class="btn" @click="savePost" style="width:100%;margin-top:16px">保存文章</button>
-            </div></div>
-            <div class="editor-side"><div class="card">
-              <div class="form-group"><label>状态</label>
-                <div class="custom-select" @click.stop>
-                  <div class="custom-select-trigger" :class="{active: customSelects['status']}" @click="toggleSelect('status')">{{ form.status === 'draft' ? '草稿' : '已发布' }}</div>
-                  <div class="custom-select-dropdown" :class="{show: customSelects['status']}">
-                    <div class="custom-select-option" :class="{selected: form.status==='draft'}" @click="selectOption('status', 'draft', 'status')">草稿</div>
-                    <div class="custom-select-option" :class="{selected: form.status==='published'}" @click="selectOption('status', 'published', 'status')">已发布</div>
-                  </div>
-                </div>
-              </div>
-              <div class="form-group"><label>日期</label><input type="date" v-model="form.published_at"></div>
-              <div class="form-group"><label>分类</label>
-                <div class="custom-select" @click.stop>
-                  <div class="custom-select-trigger" :class="{active: customSelects['category']}" @click="toggleSelect('category')">{{ form.category || '请选择' }}</div>
-                  <div class="custom-select-dropdown" :class="{show: customSelects['category']}">
-                    <div class="custom-select-option" @click="selectOption('category', '', 'category')">请选择</div>
-                    <div v-for="cat in categories" :key="cat.id" class="custom-select-option" :class="{selected: form.category===cat.name}" @click="selectOption('category', cat.name, 'category')">{{ cat.name }}</div>
-                  </div>
-                </div>
-              </div>
-              <div class="form-group"><label>标签</label><input v-model="form.tags" placeholder="用英文逗号隔开，如：标签1,标签2"></div>
-              <div class="form-group"><label>密码（可选）</label><input v-model="form.password" type="password" placeholder="留空则无需密码"></div>
-              <div class="form-group">
-                <label>封面图片</label>
-                <div class="cover-upload" @click="$refs.newFileInput.click()" @dragover.prevent @drop.prevent="handleDrop" style="padding:16px;border:2px dashed #c4b89e;border-radius:12px;background:#f0e8d8">
-                  <input ref="newFileInput" type="file" @change="handleCoverChange" accept="image/*" style="display:none">
-                  <div v-if="!coverPreview"><p style="color:#9f927d;font-size:13px">点击或拖拽上传</p></div>
-                  <img v-else :src="coverPreview" style="max-width:100%;border-radius:8px">
-                </div>
-                <div v-if="coverPreview" style="display:flex;gap:6px;margin-top:6px">
-                  <button @click="$refs.newFileInput.click()" style="flex:1;padding:8px 16px;background:#19c8b9;color:#fff;border:none;border-radius:50px;cursor:pointer;font-size:13px;font-weight:600;box-shadow:0 3px 0 0 #11a89b">更换</button>
-                  <button @click="deleteCover" style="flex:1;padding:8px 16px;background:#e05a5a;color:#fff;border:none;border-radius:50px;cursor:pointer;font-size:13px;font-weight:600;box-shadow:0 3px 0 0 #c94444">删除</button>
-                </div>
-              </div>
-            </div></div>
-          </div></div>
-        </div>
         <div v-if="currentPage==='category'">
           <div class="page-header"><h2>分类管理</h2></div>
           <button class="btn" @click="editingCategory='new';categoryForm={name:'',slug:'',description:''}" style="margin-bottom:16px">添加分类</button>
@@ -504,7 +443,7 @@ export function getAdminHTML() {
     </div>
   </div>
   <script>
-    const { createApp, ref, onMounted } = Vue;
+    const { createApp, ref, onMounted, watch } = Vue;
     createApp({
       setup() {
         const logged = ref(false);
@@ -521,7 +460,7 @@ export function getAdminHTML() {
         const editingCategory = ref(null);
         const trashPosts = ref([]);
         const confirmModal = ref({ show: false, title: '', message: '', onConfirm: null });
-        const check = () => { const t = localStorage.getItem('token'); if (t) { logged.value = true; loadPosts(); loadCategories(); loadSettings(); loadTrash(); } };
+        const check = () => { const t = localStorage.getItem('token'); if (t) { logged.value = true; currentPage.value = localStorage.getItem('adminPage') || 'posts'; loadPosts(); loadCategories(); loadSettings(); loadTrash(); } };
         const api = (url, o = {}) => {
           o.headers = o.headers || {};
           o.headers['Authorization'] = 'Bearer ' + localStorage.getItem('token');
@@ -674,6 +613,7 @@ export function getAdminHTML() {
           });
         };
 
+        watch(currentPage, (v) => { localStorage.setItem('adminPage', v); });
         onMounted(() => { check(); document.addEventListener('click', closeAllSelects); });
         return { logged, password, login, logout, posts, editingId, form, coverPreview, toast, openAdd, cancelNewPost, toggleEdit, handleCoverChange, handleDrop, deleteCover, savePost, deletePost, categories, currentPage, postPage, postPageSize, categoryForm, saveCategory, deleteCategory, editCategory, editingCategory, settingsForm, saveSettings, handleFavicon, handleFaviconDrop, handleAvatar, handleAvatarDrop, trashPosts, restorePost, permanentDelete, emptyTrash, confirmModal, showConfirm, insertMd, applyTheme, customSelects, toggleSelect, selectOption, getSelectLabel };
       }
