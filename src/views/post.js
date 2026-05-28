@@ -258,67 +258,23 @@ export function getPostHTML(post, settings) {
     .hljs-deletion { color: #ffdcd7; background: rgba(248,81,73,0.15); }
   </style>
   <script>
-    // 预处理 markdown：对所有内容（含代码块内部）的 HTML 标签进行转义
-    // 代码块内容转义后重新包裹，交给 marked 处理
-    function preprocessMarkdown(md) {
-      var fence = String.fromCharCode(96)+String.fromCharCode(96)+String.fromCharCode(96);
-      var tick = String.fromCharCode(96);
-      var nl = String.fromCharCode(10);
-      var codeBlocks = [];
-      var i = 0;
-      var withoutCode = '';
-
-      // 第一步：提取代码块，用占位符替换
-      while (i < md.length) {
-        if (md[i]===tick && md[i+1]===tick && md[i+2]===tick) {
-          var langEnd = md.indexOf(nl, i+3);
-          if (langEnd === -1) langEnd = i+3;
-          var lang = md.substring(i+3, langEnd).trim();
-          var closeIdx = md.indexOf(nl+fence, langEnd);
-          if (closeIdx === -1) { withoutCode += md.substring(i); break; }
-          var codeContent = md.substring(langEnd+1, closeIdx);
-          codeBlocks.push({lang: lang, code: codeContent});
-          var idx = codeBlocks.length - 1;
-          withoutCode += nl+'___CB_'+idx+'___'+nl;
-          i = closeIdx + 4;
-          continue;
-        }
-        if (md[i] === tick) {
-          var end = md.indexOf(tick, i+1);
-          if (end === -1) { withoutCode += md.substring(i); break; }
-          var inline = md.substring(i+1, end);
-          codeBlocks.push({lang:'', code:inline});
-          withoutCode += '___CB_'+(codeBlocks.length-1)+'___';
-          i = end+1;
-          continue;
-        }
-        withoutCode += md[i];
-        i++;
-      }
-
-      // 第二步：对非代码块内容转义 HTML
-      var escaped = withoutCode.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-
-      // 第三步：还原代码块，对代码内容也转义 HTML
-      for (var j=0; j<codeBlocks.length; j++) {
-        var cb = codeBlocks[j];
-        var safeCode = cb.code.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-        var block;
-        if (cb.code.indexOf(nl) >= 0) {
-          block = nl + fence + cb.lang + nl + safeCode + nl + fence + nl;
-        } else {
-          block = tick + safeCode + tick;
-        }
-        escaped = escaped.replace('___CB_'+j+'___', block);
-      }
-      return escaped;
+    function escHtml(str) {
+      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
 
     document.addEventListener('DOMContentLoaded', function() {
       var content = ${JSON.stringify(post.content)};
-      var safe = preprocessMarkdown(content);
+      marked.use({
+        renderer: {
+          html: function(token) {
+            var text = typeof token === 'object' ? token.text : token;
+            return escHtml(text);
+          }
+        }
+      });
       marked.setOptions({ breaks: true, gfm: true });
-      document.getElementById('post-content').innerHTML = marked.parse(safe);
+      var html = marked.parse(content);
+      document.getElementById('post-content').innerHTML = html;
       document.querySelectorAll('pre code').forEach(function(block) { hljs.highlightElement(block); });
       initLightbox();
     });
