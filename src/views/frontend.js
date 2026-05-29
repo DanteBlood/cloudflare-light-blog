@@ -42,7 +42,8 @@ export function getFrontendHTML(settings) {
     header p { opacity: 0.9; font-size: 1.1em; font-weight: 500; }
     main { max-width: 1124px; margin: 30px auto; padding: 0 20px; display: flex; gap: 24px; align-items: flex-start; }
     .sidebar { width: 280px; flex-shrink: 0; }
-    .post-list { flex: 1; display: flex; flex-direction: column; gap: 28px; }
+    .post-list { flex: 1; }
+    #app { display: flex; flex-direction: column; gap: 28px; }
     .post-card { background: #f7f3df; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 10px rgba(107, 92, 67, 0.42); display: flex; flex-direction: row; transition: all 0.3s ease; border: 2px solid #e8e0cc; }
     .post-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(114, 93, 66, 0.15); }
     .post-card .post-cover { width: 220px; flex-shrink: 0; background: #e8e0cc; display: flex; align-items: center; justify-content: center; overflow: hidden; }
@@ -90,7 +91,8 @@ export function getFrontendHTML(settings) {
       .profile-card { border-radius: 16px; padding: 16px; }
       .profile-card .avatar { width: 56px; height: 56px; }
       .profile-card .name { font-size: 1em; }
-      .post-list { width: 100%; gap: 20px; }
+      .post-list { width: 100%; }
+      #app { gap: 20px; }
       .post-card { flex-direction: column; border-radius: 16px; }
       .post-card .post-cover { display: none; }
       .post-card .post-content { padding: 14px; }
@@ -118,7 +120,7 @@ export function getFrontendHTML(settings) {
           <div class="stat-item"><div id="stat-cats" class="stat-num">-</div><div class="stat-label">分类</div></div>
           <div class="stat-item"><div id="stat-tags" class="stat-num">-</div><div class="stat-label">标签</div></div>
         </div>
-        <div style="font-size:0.88em;color:#9f927d;margin-bottom:14px;line-height:1.8">
+        <div style="font-size:0.78em;color:#9f927d;margin-bottom:14px;line-height:1.8">
           <div>建站时间：<span id="site-created">${(function(d){return d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日'})(new Date(settings.site_created_at || '2020-02-02'))}</span></div>
           <div>最后更新：<span id="site-updated">-</span></div>
         </div>
