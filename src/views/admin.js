@@ -253,6 +253,7 @@ export function getAdminHTML() {
     <div v-if="!logged" class="login" role="main" aria-label="登录">
       <div class="login-box">
         <h1>博客管理后台</h1>
+        <input v-model="username" type="text" placeholder="请输入账号" aria-label="管理员账号">
         <input v-model="password" type="password" placeholder="请输入密码" @keyup.enter="login" aria-label="管理员密码">
         <button @click="login" aria-label="登录">登录</button>
       </div>
@@ -555,6 +556,7 @@ export function getAdminHTML() {
     createApp({
       setup() {
         const logged = ref(false);
+        const username = ref('');
         const password = ref('');
         const posts = ref([]);
         const editingId = ref(null);
@@ -580,7 +582,7 @@ export function getAdminHTML() {
             throw e;
           });
         };
-        const login = async () => { try { const r = await axios.post('/api/login', { password: password.value }); if (r.data.success) { localStorage.setItem('token', r.data.token); logged.value = true; loadPosts(); loadCategories(); loadSettings(); loadTrash(); } } catch (e) { alert('登录失败'); } };
+        const login = async () => { try { const r = await axios.post('/api/login', { username: username.value, password: password.value }); if (r.data.success) { localStorage.setItem('token', r.data.token); logged.value = true; loadPosts(); loadCategories(); loadSettings(); loadTrash(); } } catch (e) { alert(e.response ? e.response.data.error || '登录失败' : '登录失败'); } };
         const logout = () => { localStorage.removeItem('token'); logged.value = false; };
         const loadPosts = async () => { try { const r = await api('/api/admin/posts'); posts.value = r.data; } catch (e) { showToast('加载文章失败'); } };
         const loadCategories = async () => { try { const r = await api('/api/categories'); categories.value = r.data; } catch (e) { showToast('加载分类失败'); } };
@@ -724,7 +726,7 @@ export function getAdminHTML() {
 
         watch(currentPage, (v) => { localStorage.setItem('adminPage', v); });
         onMounted(() => { check(); document.addEventListener('click', closeAllSelects); });
-        return { logged, password, login, logout, posts, editingId, form, coverPreview, toast, openAdd, cancelNewPost, toggleEdit, handleCoverChange, handleDrop, deleteCover, savePost, deletePost, categories, currentPage, postPage, postPageSize, categoryForm, saveCategory, deleteCategory, editCategory, editingCategory, settingsForm, saveSettings, handleFavicon, handleFaviconDrop, handleAvatar, handleAvatarDrop, trashPosts, restorePost, permanentDelete, confirmModal, showConfirm, insertMd, applyTheme, customSelects, toggleSelect, selectOption, getSelectLabel };
+        return { logged, username, password, login, logout, posts, editingId, form, coverPreview, toast, openAdd, cancelNewPost, toggleEdit, handleCoverChange, handleDrop, deleteCover, savePost, deletePost, categories, currentPage, postPage, postPageSize, categoryForm, saveCategory, deleteCategory, editCategory, editingCategory, settingsForm, saveSettings, handleFavicon, handleFaviconDrop, handleAvatar, handleAvatarDrop, trashPosts, restorePost, permanentDelete, confirmModal, showConfirm, insertMd, applyTheme, customSelects, toggleSelect, selectOption, getSelectLabel };
       }
     }).mount('#app');
   <\/script>

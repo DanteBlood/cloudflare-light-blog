@@ -163,6 +163,11 @@ export async function handleAPI(request, env, path) {
         return json({ success: false, error: '登录尝试次数过多，请 10 分钟后再试' }, 429);
       }
 
+      // 验证账号
+      if (env.ADMIN_USERNAME && body.username !== env.ADMIN_USERNAME) {
+        return json({ success: false, error: '账号错误' }, 401);
+      }
+
       if (body.password === env.ADMIN_PASSWORD) {
         await clearRateLimit(env, rateKey);
         const token = await generateToken(env.ADMIN_PASSWORD);

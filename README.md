@@ -6,35 +6,42 @@
 
 ### 前台
 - ✅ 文章列表（分页、分类筛选、搜索标题和标签）
-- ✅ 文章详情页（Markdown 渲染、代码高亮、代码复制按钮、折叠框）
-- ✅ 图片灯箱（上一张/下一张导航、键盘操作）
-- ✅ 侧边栏（个人简介、统计数据、建站时间/最后更新、分类、自定义友链）
-- ✅ 密码保护文章（HMAC 认证、24小时有效期、5次/1小时速率限制）
+- ✅ 文章详情页（Markdown 渲染、代码高亮、代码复制按钮、折叠框、引用样式）
+- ✅ 图片灯箱（上一张/下一张导航、键盘操作、图片计数器）
+- ✅ 侧边栏（个人简介、文章/分类/标签统计、建站时间/最后更新、分类列表、自定义友链）
+- ✅ 密码保护文章（HKDF 密钥派生、HMAC 签名、24小时有效期、5次/1小时速率限制）
 - ✅ 全站密码保护（可选、Cookie 24小时有效期、5次/1小时速率限制）
-- ✅ 响应式布局（手机端 / 平板端 / 桌面端）
+- ✅ 搜索栏（实时搜索文章标题和标签）
 - ✅ 便签贴纸风格标签
+- ✅ 响应式布局（手机端 / 平板端 / 桌面端）
 
 ### 后台管理
-- ✅ 文章管理（表格布局、分页、内联新建/编辑、封面图上传+外链）
-- ✅ 分类管理（表格布局）
+- ✅ 文章管理（表格布局、分页、内联新建/编辑、封面图上传+外链、Markdown 编辑器工具栏）
+- ✅ 分类管理（表格布局、增删改）
 - ✅ 回收站（表格布局、恢复/彻底删除）
 - ✅ 个人设置（头像、简介、建站时间、友链标题/内容）
 - ✅ 网站设置（标题、图标、主题、页脚、自定义JS、全站密码、CORS 来源、功能开关）
 - ✅ 主题切换（动物森林 / 海洋微风）
-- ✅ 图片上传（支持上传 + 外链，限制 2MB）
-- ✅ Markdown 编辑器工具栏（标题、加粗、斜体、链接、图片、代码、列表、引用、分割线、折叠框）
+- ✅ 图片上传（支持上传 + 外链，限制 2MB，类型验证）
+- ✅ Markdown 编辑器（标题、加粗、斜体、链接、图片、代码、列表、引用、分割线、折叠框）
+- ✅ 页面刷新保持当前导航页
 - ✅ 响应式布局（手机端 / 平板端 / 桌面端）
 
 ### 安全
 - ✅ HMAC-SHA256 管理员认证（48小时过期）
-- ✅ 全站密码保护（Cookie + HMAC 签名、24小时过期）
+- ✅ HKDF 密钥派生（从密码派生 32 字节安全密钥，不直接使用密码原文）
+- ✅ 恒定时间比较（timingSafeEqual，防止时序攻击）
+- ✅ 密码哈希存储（文章密码使用 HMAC-SHA256 哈希，数据库不存明文）
+- ✅ 全站密码保护（HKDF 派生 Cookie 密钥、24小时过期）
 - ✅ 登录速率限制（5次/10分钟）
 - ✅ 密码速率限制（全站密码 + 文章密码，5次/1小时）
 - ✅ XSS 防护（Markdown 内容转义、sanitizeMarkdown）
-- ✅ SQL 注入防护（参数化查询）
-- ✅ 文件上传限制（2MB、类型验证）
-- ✅ 错误信息隐藏（仅记录到服务器日志）
-- ✅ CORS 可配置来源（支持多域名，后台设置）
+- ✅ SQL 注入防护（参数化查询、表名白名单验证）
+- ✅ 文件上传限制（2MB、MIME 类型验证、文件名正则校验）
+- ✅ 错误信息隐藏（仅记录截断的错误摘要到服务器日志）
+- ✅ CORS 可配置来源（支持多域名逗号分隔，后台设置）
+- ✅ HTTP 安全头（X-Content-Type-Options、X-Frame-Options、Referrer-Policy、HSTS）
+- ✅ Cookie 安全属性（HttpOnly、SameSite=Lax、Max-Age）
 
 ### SEO
 - ✅ meta 标签（description、robots）
@@ -43,7 +50,7 @@
 - ✅ canonical URL
 - ✅ sitemap.xml 自动生成
 - ✅ robots.txt（后台可开关）
-- ✅ 图片懒加载
+- ✅ 图片懒加载（loading="lazy"）
 
 ### 性能
 - ✅ 数据库索引（status、created_at、slug、category）
@@ -55,7 +62,7 @@
 
 ## 技术栈
 
-- **运行时**: Cloudflare Workers (ES Modules)
+- **运行时**: Cloudflare Workers (ES Modules, compatibility_date: 2025-05-01)
 - **数据库**: Cloudflare D1
 - **对象存储**: Cloudflare R2（可选）
 - **前端**: 原生 HTML + Vue 3（后台管理）
@@ -66,19 +73,19 @@
 
 ```
 src/
-├── worker.js              # 主入口（路由、全站密码、robots.txt、favicon.ico）
-├── api.js                 # API 处理（分页、缓存、输入验证、速率限制、密码认证）
+├── worker.js              # 主入口（路由、全站密码验证、robots.txt、favicon.ico）
+├── api.js                 # API 处理（分页、缓存、输入验证、速率限制、密码认证、Cookie 生成）
 ├── lib/
-│   ├── utils.js           # 工具函数（JSON 响应、HTML 转义、CORS 多域名）
-│   ├── db.js              # 数据库初始化（索引、批量操作、设置读写）
-│   ├── auth.js            # HMAC-SHA256 认证（48h 过期）
+│   ├── utils.js           # 工具函数（JSON/HTML 响应、CORS 多域名、HTTP 安全头）
+│   ├── db.js              # 数据库初始化（索引、表名白名单、设置读写）
+│   ├── auth.js            # 认证模块（HKDF 密钥派生、HMAC-SHA256、恒定时间比较、密码哈希）
 │   ├── cache.js           # Workers Cache API
-│   └── image.js           # 图片处理（R2 上传、2MB 限制、类型验证）
+│   └── image.js           # 图片处理（R2 上传、2MB 限制、MIME 验证、文件名校验）
 └── views/
     ├── frontend.js        # 前台首页（SEO、分页、搜索、响应式）
-    ├── post.js            # 文章详情页（Markdown、代码高亮、灯箱、SEO）
+    ├── post.js            # 文章详情页（Markdown、代码高亮、灯箱、SEO、懒加载）
     ├── password.js        # 密码验证页（API 认证、速率限制）
-    └── admin.js           # 后台管理页（Vue 3、响应式）
+    └── admin.js           # 后台管理页（Vue 3、响应式、SRI）
 wrangler.toml              # Cloudflare 配置
 ```
 
@@ -138,11 +145,13 @@ git push -u origin main
 
 | 变量名 | 类型 | 说明 |
 |--------|------|------|
+| `ADMIN_USERNAME` | **Secret** | 管理员账号 |
 | `ADMIN_PASSWORD` | **Secret** | 管理员密码 |
-| `DB_ID` | **Secret** | D1 数据库 ID |
 
-> ⚠️ `ADMIN_PASSWORD` 和 `DB_ID` 请使用 **Secret** 类型，确保敏感信息安全。
+> ⚠️ `ADMIN_USERNAME` 和 `ADMIN_PASSWORD` 请使用 **Secret** 类型，确保凭据加密存储。
 > CORS 来源、全站密码等配置在后台网站设置中管理，无需在此设置。
+
+> 📌 **凭据重置提示：** 若遗忘管理员账号或密码，可前往 Cloudflare Dashboard → Workers & Pages → 你的 Worker → Settings → Variables and Secrets，重新设置 `ADMIN_USERNAME` 和 `ADMIN_PASSWORD` 的值，保存后触发重新部署即可生效。无需修改代码或推送仓库。
 
 ### 7. 后续更新
 
@@ -162,6 +171,7 @@ git push
 | 后台管理 | `https://你的域名/admin/` |
 | 站点地图 | `https://你的域名/sitemap.xml` |
 | robots.txt | `https://你的域名/robots.txt` |
+| favicon | `https://你的域名/favicon.ico` |
 | 健康检查 | `https://你的域名/api/health` |
 
 ## API 接口
@@ -174,12 +184,12 @@ git push
 | GET | `/api/post/?slug=xxx` | 文章详情 |
 | GET | `/api/categories` | 分类列表 |
 | GET | `/api/settings` | 网站设置 |
-| GET | `/api/stats` | 统计信息 |
+| GET | `/api/stats` | 统计信息（文章数、分类数、标签数、最新更新日期） |
 | GET | `/api/links` | 友链列表 |
-| GET | `/api/health` | 健康检查 |
+| GET | `/api/health` | 健康检查（数据库连接状态） |
 | GET | `/sitemap.xml` | 站点地图 |
-| POST | `/api/site-auth` | 全站密码认证 |
-| POST | `/api/post-auth` | 文章密码认证 |
+| POST | `/api/site-auth` | 全站密码认证（返回 HttpOnly Cookie） |
+| POST | `/api/post-auth` | 文章密码认证（返回 HttpOnly Cookie） |
 
 ### 管理接口（需要 Bearer Token）
 
@@ -202,21 +212,30 @@ git push
 ## 后台设置说明
 
 ### 个人设置
-- 个人名称、头像（上传或外链）
-- 个人简介
-- 建站时间（默认 2020-02-02）
-- 友链标题（默认"友链"）
-- 友链内容（名称,地址 每行一个）
+
+| 设置项 | 说明 | 默认值 |
+|--------|------|--------|
+| 个人名称 | 侧边栏显示的作者名 | 空 |
+| 个人头像 | 上传图片或输入外链地址 | 空 |
+| 个人简介 | 侧边栏简介文字 | 空 |
+| 建站时间 | 侧边栏显示的建站日期 | 2020-02-02 |
+| 友链标题 | 侧边栏友链模块标题 | 友链 |
+| 友链内容 | 名称,地址 每行一个 | 空 |
 
 ### 网站设置
-- 网站标题 / 副标题
-- 网站图标（上传或外链）
-- 主题风格（动物森林 / 海洋微风）
-- 网站页脚（支持 HTML）
-- 自定义 JS
-- 全站密码（可选，留空不启用）
-- CORS 允许来源（多域名逗号分隔，* 表示全部）
-- 功能开关：允许搜索引擎爬取 / 启用压缩
+
+| 设置项 | 说明 | 默认值 |
+|--------|------|--------|
+| 网站标题 | 浏览器标题栏和侧边栏 | 我的博客 |
+| 网站副标题 | 首页描述文字 | 空 |
+| 网站图标 | 上传图片或输入外链地址 | 空 |
+| 主题风格 | 动物森林 / 海洋微风 | 动物森林 |
+| 网站页脚 | 支持 HTML | © 2026 我的博客 |
+| 自定义 JS | 注入到页面的自定义脚本 | 空 |
+| 全站密码 | 留空则不启用，访问任何页面需输入密码 | 空 |
+| CORS 允许来源 | 多域名逗号分隔，* 表示全部 | * |
+| 允许搜索引擎爬取 | 控制 robots.txt 是否允许爬取 | 开启 |
+| 启用压缩 | 控制 Cloudflare 自动压缩 | 开启 |
 
 ## License
 
