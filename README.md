@@ -5,8 +5,8 @@
 ## 预览图
 <table>
   <tr>
-    <td><img src="https://tvax2.sinaimg.cn/large/78f38e4bgy1idtpne8ezsj21d10y5amt.jpg" width=45% referrerpolicy="no-referrer" /></td>
-    <td><img src="https://tvax2.sinaimg.cn/large/78f38e4bgy1idtpne8ezsj21d10y5amt.jpg" width=45% referrerpolicy="no-referrer" /></td>
+    <td><div align="center"><img src="https://tvax2.sinaimg.cn/large/78f38e4bgy1idtpne8ezsj21d10y5amt.jpg" width=99% referrerpolicy="no-referrer" /></div></td>
+    <td><div align="center"><img src="https://tvax1.sinaimg.cn/large/78f38e4bgy1idtpnefku6j219i0z2h2d.jpg" width=99% referrerpolicy="no-referrer" /></div></td>
   </tr>
 </table>
 
